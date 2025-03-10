@@ -1,36 +1,12 @@
-class EmptyLanguageException extends Exception {
-    public EmptyLanguageException(String message) {
-        super(message);
-    }
-}
+import java.util.ArrayList;
+import java.util.List;
+
 public class Automata{
+    ArrayList<Integer> nodes = new ArrayList<Integer>();
+    public static Character alphabet [] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
-    int [] transitions;
-    int id;
-    String alphabet;
-    String[] language;
-    public Automata(int trainsitions [], int id, String alphabet, String [] language) throws EmptyLanguageException
-    {
-        this.transitions = trainsitions;
-        this.id = id;
-        if (checkEmptyLanguage(language))
-            this.alphabet = alphabet;
-        else
-        {
-            throw new EmptyLanguageException("Language can't be empty");
-        }
-        this.language = language;
+    public void readAutomata(){
 
     }
-    public Boolean checkEmptyLanguage(String [] language)
-    {
-        if (language.length == 0)
-        {
-            return false;
-        }
-        return true;
-    }
-
-
 
 }
