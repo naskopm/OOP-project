@@ -2,17 +2,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 public class Automata{
-    
-    public void displayAutomata(){
-        System.out.println("Преходите в автомата са: ");
-        for(Node node : nodes){
-            for(Transition transition : node.transitions){
-                System.out.println(node.id + "-->" + transition.getNextNode().getId());
+    private int id;
+    public ArrayList<Node> nodes = new ArrayList<Node>();
+    public static Character alphabet [] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    public static List<Automata> automataList = new ArrayList<>();
+    public static Automata searchAutomata(int id)
+    {
+        for (int i = 0; i < automataList.size(); i++) {
+            if (id == automataList.get(i).getId()) {
+                return  automataList.get(i);
             }
         }
-        
+        return null;
     }
-    public void checkInforAboutAutomata(int id)
+    public int getId()
+    {
+        int copyID = this.id;
+        return copyID;
+    }
+    
+    public void checkInfoForTransition(int id)
     {
         Node searchedNode = null;
         for(int i=0; i< nodes.size(); i++)
@@ -112,7 +121,7 @@ public class Automata{
                     }
                 }
             }
-           //nodes.add(this);
+            nodes.add(this);
             System.out.println("Създадохте нов възел с id: " + this.id);
         }
         
@@ -127,9 +136,9 @@ public class Automata{
        
     }
     
-    public ArrayList<Node> nodes = new ArrayList<Node>();
-    public static Character alphabet [] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    
     public Automata(){
+        this.id = 1;
         System.out.println("Създаване на автомат, ако искате да приключите напишете stop ");
         Scanner scanner = new Scanner(System.in);
         String input = "";
@@ -168,9 +177,11 @@ public class Automata{
                 System.out.println("Въведете id на следващият възел");
                 Node nextNode = new Node();
                 //nextNode.setId(Integer.parseInt(scanner.nextLine()));
+
                 edittedNode.addTransition(symbol, nextNode);
                 nodes.add(nextNode);
             }
+            automataList.add(this);
         }
         
     }

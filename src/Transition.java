@@ -1,4 +1,3 @@
-import java.lang.classfile.components.ClassPrinter.Node;
 
 public class Transition {
     private char symbol;
