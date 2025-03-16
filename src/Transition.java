@@ -1,17 +1,19 @@
+import java.lang.classfile.components.ClassPrinter.Node;
+
 public class Transition {
     private char symbol;
-    private int nextNodeId;
+    private Automata.Node nextNode;
 
-    public Transition(char symbol, int nextNodeId) {
+    public Transition(char symbol, Automata.Node nextNode) {
         this.symbol = symbol;
-        this.nextNodeId = nextNodeId;
+        this.nextNode = nextNode;
     }
 
     public char getSymbol() {
         return symbol;
     }
 
-    public int getNextNodeId() {
-        return nextNodeId;
+    public Automata.Node getNextNode() {
+        return nextNode;
     }
 } 
