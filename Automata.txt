@@ -1,0 +1,8 @@
+Automata,2
+Node,1,1,0,0,0
+Transition,1,a,2
+Transition,1,b,3
+Transition,1,c,4
+Node,2,0,1,1,0
+Node,3,0,1,1,0
+Node,4,0,1,1,0

@@ -1,5 +1,8 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.MissingFormatArgumentException;
 import java.util.Scanner;
 public class Automata{
     private int id;
@@ -27,7 +30,7 @@ public class Automata{
         if (searchedNode != null) {
             for (int i = 0; i < searchedNode.transitions.size(); i++) {
                 Transition transition = searchedNode.transitions.get(i);
-                System.out.print(transition.getSymbol() + " -> " + transition.getNextNode().getId());
+                System.out.print(transition.getSymbol() + " -> " + transition.getNextNode());
                 System.out.println();
             }
         }
@@ -50,8 +53,8 @@ public class Automata{
         private boolean isFinal;
         private boolean isInitial;
         public ArrayList<Transition> transitions;
-        private Node previousNode;
-        private Node nextNode;
+        private int previousNode;
+        private int nextNode;
 
         public int getId() {
             return id;
@@ -85,23 +88,27 @@ public class Automata{
             this.transitions = transitions;
         }
 
-        public Node getPreviousNode() {
+        public int getPreviousNode() {
             return previousNode;
         }
 
-        public void setPreviousNode(Node previousNode) {
+        public void setPreviousNode(int previousNode) {
             this.previousNode = previousNode;
         }
 
-        public Node getNextNode() {
+        public int getNextNode() {
             return nextNode;
         }
 
-        public void setNextNode(Node nextNode) {
+        public void setNextNode(int nextNode) {
             this.nextNode = nextNode;
         }
+        public Node()
+        {
 
-        public Node(){
+        }
+
+        public Node(Boolean overload){
             System.out.println("Създаване на възел");
             java.util.Scanner scanner = new java.util.Scanner(System.in);
 
@@ -122,7 +129,7 @@ public class Automata{
                 // Assuming we have access to the nodes list from Automata
                 for(Node node : nodes){
                     if(node.getId() == previousNodeId){
-                        this.previousNode = node;
+                        this.previousNode = node.getId();
                         break;
                     }
                 }
@@ -135,16 +142,20 @@ public class Automata{
         public void removeTransition(Transition transition){
             this.transitions.remove(transition);
         }
-        public void addTransition(char symbol, Node nextNode){
+        public void addTransition(char symbol, int nextNode){
             Transition transition = new Transition(symbol, nextNode);
             this.transitions.add(transition);
         }
 
     }
 
+    public Automata()
+    {
 
-    public Automata(){
-        this.id = 1;
+    }
+
+    public Automata(Boolean overload){
+        this.id = 2;
         System.out.println("Създаване на автомат, ако искате да приключите напишете stop ");
         Scanner scanner = new Scanner(System.in);
         String input = "";
@@ -158,7 +169,7 @@ public class Automata{
             int nodeId = Integer.parseInt(input);
             Node edittedNode = null;
             if (nodes.size() == 0){
-                edittedNode = new Node();
+                edittedNode = new Node(true);
             }
 
             for(Node searchedNode : nodes){
@@ -187,7 +198,7 @@ public class Automata{
                 Node nextNode;
                 if (TheTransitionNode == null)
                 {
-                     nextNode = new Node();
+                     nextNode = new Node(true);
                 }
                 else
                 {
@@ -195,12 +206,102 @@ public class Automata{
                 }
                 //nextNode.setId(Integer.parseInt(scanner.nextLine()));
 
-                edittedNode.addTransition(symbol, nextNode);
+                edittedNode.addTransition(symbol, nextNode.getId());
             }
             automataList.add(this);
         }
 
     }
+    // Method to write the automata structure to file "Automata.txt" (in append mode)
+    public void WriteToFile() {
+        try (FileWriter writer = new FileWriter("Automata.txt", true)) {
+            // Write automata id
+            writer.write("Automata," + this.id + "\n");
 
+            // Write each node's information:
+            // Format: Node,<nodeId>,<isInitial: 1 or 0>,<isFinal: 1 or 0>,<previousNode>,<nextNode>
+            for (Node node : nodes) {
+                writer.write("Node,"
+                        + node.getId() + ","
+                        + (node.isInitial() ? "1" : "0") + ","
+                        + (node.isFinal() ? "1" : "0") + ","
+                        + node.getPreviousNode() + ","
+                        + node.getNextNode() + "\n");
+
+                // Write each transition for this node:
+                // Format: Transition,<sourceNodeId>,<symbol>,<destinationNodeId>
+                for (Transition t : node.getTransitions()) {
+                    writer.write("Transition,"
+                            + node.getId() + ","
+                            + t.getSymbol() + ","
+                            + t.getNextNode() + "\n");
+                }
+            }
+            writer.flush();
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file.");
+            e.printStackTrace();
+        }
+    }
+
+    // Static method to read an automata structure from a file
+    public static Automata readFromFile(String filename) {
+        Automata automata = new Automata(); // Assumes a default, non-interactive constructor exists
+        java.util.Map<Integer, Node> nodeMap = new java.util.HashMap<>();
+
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split(",");
+                if (tokens.length == 0) continue;
+
+                String type = tokens[0].trim();
+                if (type.equals("Automata")) {
+                    // Format: Automata,<automataId>
+                    automata.id = Integer.parseInt(tokens[1].trim());
+                    automataList.add(automata);
+                } else if (type.equals("Node")) {
+                    // Format: Node,<nodeId>,<isInitial>,<isFinal>,<previousNode>,<nextNode>
+                    int nodeId = Integer.parseInt(tokens[1].trim());
+                    boolean isInitial = tokens[2].trim().equals("1");
+                    boolean isFinal = tokens[3].trim().equals("1");
+                    int previousNode = Integer.parseInt(tokens[4].trim());
+                    int nextNode = Integer.parseInt(tokens[5].trim());
+
+                    // Create a new Node (using the default constructor) and set its attributes
+                    Node node = automata.new Node();
+                    node.setId(nodeId);
+                    node.setInitial(isInitial);
+                    node.setFinal(isFinal);
+                    node.setPreviousNode(previousNode);
+                    node.setNextNode(nextNode);
+                    node.transitions = new ArrayList<>();  // initialize transitions list
+
+                    automata.nodes.add(node);
+                    nodeMap.put(nodeId, node);
+                } else if (type.equals("Transition")) {
+                    // Format: Transition,<sourceNodeId>,<symbol>,<destinationNodeId>
+                    int sourceNodeId = Integer.parseInt(tokens[1].trim());
+                    char symbol = tokens[2].trim().charAt(0);
+                    int destNodeId = Integer.parseInt(tokens[3].trim());
+
+                    Node sourceNode = nodeMap.get(sourceNodeId);
+                    if (sourceNode != null) {
+                        // Assuming Transition constructor is: Transition(char symbol, int nextNode)
+                        sourceNode.addTransition(symbol, destNodeId);
+                    }
+                }
+
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading from the file.");
+            e.printStackTrace();
+        }
+        return automata;
+    }
 
 }
+
+
+

@@ -1,9 +1,9 @@
 
 public class Transition {
     private char symbol;
-    private Automata.Node nextNode;
+    private int nextNode;
 
-    public Transition(char symbol, Automata.Node nextNode) {
+    public Transition(char symbol, int nextNode) {
         this.symbol = symbol;
         this.nextNode = nextNode;
     }
@@ -12,7 +12,7 @@ public class Transition {
         return symbol;
     }
 
-    public Automata.Node getNextNode() {
+    public int getNextNode() {
         return nextNode;
     }
 } 
