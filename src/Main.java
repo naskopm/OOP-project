@@ -8,7 +8,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         int menu = 0;
         while (true) {
-            System.out.println("Изберете опция 1 - Създаване на нов автомат 2 - Търсене на преход в даден автомат");
+            System.out.println("Изберете опция 1 - Създаване на нов автомат 2 - Търсене на преход в даден автомат, 3-Запиши във файл 4-Прочети от файл");
             menu = Integer.parseInt(scanner.nextLine());
            switch (menu) {
             case 1:
@@ -25,6 +25,16 @@ public class Main {
                 found.checkInfoForTransition(nodeID);
 
             }
+            break;
+               case 3:
+
+                   Automata.SaveToFile();
+
+               break;
+               case 4:
+                   Automata.ReadFromFile();
+                   break;
+
             default:
                 break;
            } 

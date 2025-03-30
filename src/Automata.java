@@ -1,11 +1,21 @@
+import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-public class Automata{
+public class Automata implements Serializable {
     private int id;
     public ArrayList<Node> nodes = new ArrayList<Node>();
     public static Character alphabet [] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     public static List<Automata> automataList = new ArrayList<>();
+    static int maxID = 0;
+    private void makeAnID(){
+        for (int i = 0; i < automataList.size(); i++) {
+            if (maxID < automataList.get(i).getId())
+                maxID = automataList.get(i).getId();
+        }
+        ++maxID;
+    }
     public static Automata searchAutomata(int id)
     {
         for (int i = 0; i < automataList.size(); i++) {
@@ -14,6 +24,28 @@ public class Automata{
             }
         }
         return null;
+    }
+    static void SaveToFile()
+    {
+        try (FileOutputStream fileOut = new FileOutputStream("person.ser");
+             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+            out.writeObject(automataList);
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+    static void ReadFromFile() {
+        try (FileInputStream fileIn = new FileInputStream("person.ser");
+             ObjectInputStream in = new ObjectInputStream(fileIn)) {
+
+            // Read and cast the object
+            automataList = (List<Automata>) in.readObject();
+
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
     public int getId()
     {
@@ -39,7 +71,7 @@ public class Automata{
             }
         }
     }
-    public class Node{
+    public class Node implements Serializable{
         private int id;
         private boolean isFinal;
         private boolean isInitial;
@@ -50,6 +82,7 @@ public class Automata{
         public int getId() {
             return id;
         }
+
 
         public void setId(int id) {
             this.id = id;
@@ -138,7 +171,8 @@ public class Automata{
     
     
     public Automata(){
-        this.id = 1;
+        makeAnID();
+        this.id = maxID;
         System.out.println("Създаване на автомат, ако искате да приключите напишете stop ");
         Scanner scanner = new Scanner(System.in);
         String input = "";

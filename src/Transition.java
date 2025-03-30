@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public class Transition {
+public class Transition implements Serializable {
     private char symbol;
     private Automata.Node nextNode;
 
