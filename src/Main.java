@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        Automata.ReadFromFile();
         Scanner scanner = new Scanner(System.in);
         int menu = 0;
         while (true) {
@@ -33,6 +34,22 @@ public class Main {
                break;
                case 4:
                    Automata.ReadFromFile();
+                   break;
+               case 5:
+               {
+                   System.out.println("Въведете id на автомата на който искате да проверите, дали езика е празен");
+                   int input = Integer.parseInt(scanner.nextLine());
+                   Automata foundAutomata = Automata.searchAutomata(input);
+                   System.out.println(foundAutomata.checkIfEmptyAlphabet());
+               }
+               break;
+               case 6:
+               {
+                   Automata.printAllAutomatas();
+               }
+               break;
+               case 7:
+                   Automata.displayAutomata();
                    break;
 
             default:

@@ -8,7 +8,6 @@ public class Transition implements Serializable {
         this.symbol = symbol;
         this.nextNode = nextNode;
     }
-
     public char getSymbol() {
         return symbol;
     }

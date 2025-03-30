@@ -4,17 +4,84 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 public class Automata implements Serializable {
+    private static final long serialVersionUID = -8172004642272343082L;
     private int id;
     public ArrayList<Node> nodes = new ArrayList<Node>();
     public static Character alphabet [] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     public static List<Automata> automataList = new ArrayList<>();
+    private static int maxNodeID = 0;
     static int maxID = 0;
+
+
+    static void printAllAutomatas()
+    {
+        for (int i = 0; i < automataList.size(); i++) {
+            System.out.print("Automata id: " + automataList.get(i).getId()+ " ");
+        }
+    }
+    static void displayAutomata()
+    {
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        int id = Integer.parseInt(scanner.nextLine());
+        Automata automataToBeDisplayed = Automata.searchAutomata(id);
+        recurssion(automataToBeDisplayed.findInitialNode(), automataToBeDisplayed);
+    }
+    static void recurssion(Node displayed, Automata automataToBeDisplayed)
+    {
+        automataToBeDisplayed.checkInfoForTransition(displayed.getId());
+        for (int i = 0; i < displayed.transitions.size(); i++) {
+
+            recurssion(displayed.transitions.get(i).getNextNode(), automataToBeDisplayed);
+        }
+
+    }
+
+    public Node findInitialNode()
+    {
+        for (int i = 0; i < nodes.size(); i++) {
+            if (nodes.get(i).isInitial)
+            {
+                return nodes.get(i);
+            }
+        }
+        return null;
+    }
+    public boolean checkIfEmptyAlphabet(){
+        Node initialNode = findInitialNode();
+        boolean foundLetter = false;
+        while (!foundLetter)
+        {
+            for (int i = 0; i < initialNode.transitions.size(); i++) {
+                if (initialNode.transitions.get(i).getSymbol() == '\u0000')
+                {
+                    if (initialNode.transitions.get(i).getNextNode() != null)
+                    {
+                        foundLetter = true;
+                        initialNode = initialNode.transitions.get(i).getNextNode();
+                    }
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     private void makeAnID(){
         for (int i = 0; i < automataList.size(); i++) {
             if (maxID < automataList.get(i).getId())
                 maxID = automataList.get(i).getId();
         }
         ++maxID;
+    }
+    private void makeANodeID(){
+        for (int i = 0; i < nodes.size(); i++) {
+            if (maxNodeID < nodes.get(i).getId())
+                maxNodeID = nodes.get(i).getId();
+        }
+        ++maxNodeID;
     }
     public static Automata searchAutomata(int id)
     {
@@ -27,7 +94,7 @@ public class Automata implements Serializable {
     }
     static void SaveToFile()
     {
-        try (FileOutputStream fileOut = new FileOutputStream("person.ser");
+        try (FileOutputStream fileOut = new FileOutputStream("AutomataList.ser");
              ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
             out.writeObject(automataList);
         } catch (IOException i) {
@@ -35,7 +102,7 @@ public class Automata implements Serializable {
         }
     }
     static void ReadFromFile() {
-        try (FileInputStream fileIn = new FileInputStream("person.ser");
+        try (FileInputStream fileIn = new FileInputStream("AutomataList.ser");
              ObjectInputStream in = new ObjectInputStream(fileIn)) {
 
             // Read and cast the object
@@ -72,12 +139,14 @@ public class Automata implements Serializable {
         }
     }
     public class Node implements Serializable{
+
         private int id;
         private boolean isFinal;
         private boolean isInitial;
         public ArrayList<Transition> transitions;
         private Node previousNode;
         private Node nextNode;
+
 
         public int getId() {
             return id;
@@ -131,9 +200,9 @@ public class Automata implements Serializable {
         public Node(){
             System.out.println("Създаване на възел");
             java.util.Scanner scanner = new java.util.Scanner(System.in);
-            
-            System.out.println("Enter node ID:");
-            this.id = Integer.parseInt(scanner.nextLine());
+
+            makeANodeID();
+            this.id = maxNodeID;
             
             System.out.println("Is this a final node? (true/false):");
             this.isFinal = Boolean.parseBoolean(scanner.nextLine());
@@ -157,8 +226,9 @@ public class Automata implements Serializable {
             nodes.add(this);
             System.out.println("Създадохте нов възел с id: " + this.id);
         }
-        
-    
+
+
+
         public void removeTransition(Transition transition){
             this.transitions.remove(transition);
         }
@@ -207,7 +277,13 @@ public class Automata implements Serializable {
                 if (input.equals("stop")){
                     break;
                 }
-                char symbol = input.charAt(0);
+                char symbol;
+                if (input.equals("")) {
+                    symbol = '\u0000';
+                }
+                else {
+                    symbol = input.charAt(0);
+                }
                 System.out.println("Въведете id на следващият възел");
                 Node nextNode = new Node();
                 //nextNode.setId(Integer.parseInt(scanner.nextLine()));
