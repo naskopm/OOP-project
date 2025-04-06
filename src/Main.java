@@ -55,11 +55,11 @@ public class Main {
                    Automata.checkIfDeterministic();
                    System.out.println(Automata.isDeterministic);
                    break;
+               case 9:
+                   Automata.Recognise(1,"fasfafsafasf");
+                   break;
             default:
-              /* case 9:
-                   Automata.Recognise(1,"a*bcab");
 
-                break;*/
            } 
         }
         

@@ -38,20 +38,62 @@ public class Automata implements Serializable {
         }
 
     }
-    /*public static void Recognise(int id,String query)
+    public static void Recognise(int id,String query)
     {
-        Automata checked = Automata.searchAutomata(id);
-        ArrayList<String> tokenizer = new ArrayList<>();
-        for (int i = 0; i < tokenizer.size(); i++) {
-            if (tokenizer.get(i).equals("*") && i !=0)
+        Boolean isRecognised = true;
+        ArrayList<ArrayList<String>> tokenizers = new ArrayList<>();
+        Automata automata = Automata.searchAutomata(id);
+        String checkedSequences [] = query.split("\\+");
+        for (int i = 0; i < checkedSequences.length; i++) {
+            Automata checked = Automata.searchAutomata(id);
+            ArrayList<String> tokenizer = new ArrayList<>();
+
+            String querySplitted [] = checkedSequences[i].split("");
+            for (int j = 0; j < querySplitted.length; j++) {
+                tokenizer.add(querySplitted[j]);
+            }
+            for (int j = 0; j < tokenizer.size(); j++) {
+                if (tokenizer.get(j).equals("*") && j !=0)
+                {
+                    String current = tokenizer.get(j-1);
+                    current += tokenizer.get(j);
+                    tokenizer.set(j-1, current);
+                    tokenizer.remove(j);
+                }
+            }
+            tokenizers.add(tokenizer);
+        }
+        for (int i = 0; i < tokenizers.size(); i++) {
+            if (!isRecognised)
             {
-                String current = tokenizer.get(i-1);
-                current += tokenizer.get(i);
-                tokenizer.get(i) = current;
+                break;
+            }
+            isRecognised = false;
+            ArrayList<String> current = tokenizers.get(i);
+            Node currentNode = automata.findInitialNode();
+            for (int j = 0; j < current.size(); j++) {
+                for (int k = 0; k < currentNode.transitions.size(); k++) {
+                    if (current.get(j).indexOf('*') != -1)
+                    {
+                        if (currentNode.transitions.get(k).getSymbol() == current.get(k).charAt(0) && currentNode.transitions.get(k).getNextNode() == currentNode.transitions.get(k).getPreviousNode())
+                        {
+                            isRecognised = true;
+                        }
+                    }
+                    else {
+                        if (currentNode.transitions.get(k).getSymbol() != current.get(j).charAt(0))
+                        {
+                            isRecognised = true;
+                            currentNode = currentNode.nextNode;
+                        }
+                    }
+                }
+
+
             }
         }
-
-    }*/
+        System.out.println(isRecognised);
+    }
     static void printAllAutomatas()
     {
         for (int i = 0; i < automataList.size(); i++) {
