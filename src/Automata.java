@@ -1,18 +1,57 @@
+import javax.imageio.plugins.tiff.TIFFImageReadParam;
 import java.io.*;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 public class Automata implements Serializable {
-    private static final long serialVersionUID = -8172004642272343082L;
+    private static final long serialVersionUID =  -8172004642272343082L;
     private int id;
     public ArrayList<Node> nodes = new ArrayList<Node>();
     public static Character alphabet [] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     public static List<Automata> automataList = new ArrayList<>();
     private static int maxNodeID = 0;
     static int maxID = 0;
+    static boolean isDeterministic = true;
+    static void checkIfDeterministic()
+    {
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        int id = Integer.parseInt(scanner.nextLine());
+        Automata automataToBeDisplayed = Automata.searchAutomata(id);
+        recurssionForDeterminism(automataToBeDisplayed.findInitialNode(), automataToBeDisplayed);
+    }
+    static void recurssionForDeterminism(Node displayed, Automata automataToBeDisplayed)
+    {
 
+        for (int i = 0; i < displayed.transitions.size(); i++) {
+            for (int j = 0; j < displayed.transitions.size(); j++) {
+                if (i!=j){
+                    if(displayed.transitions.get(i).getSymbol() == displayed.transitions.get(j).getSymbol())
+                    {
+                        isDeterministic = false;
+                        break;
+                    }
+                }
+                recurssion(displayed.transitions.get(i).getNextNode(),automataToBeDisplayed);
+            }
+        }
 
+    }
+    /*public static void Recognise(int id,String query)
+    {
+        Automata checked = Automata.searchAutomata(id);
+        ArrayList<String> tokenizer = new ArrayList<>();
+        for (int i = 0; i < tokenizer.size(); i++) {
+            if (tokenizer.get(i).equals("*") && i !=0)
+            {
+                String current = tokenizer.get(i-1);
+                current += tokenizer.get(i);
+                tokenizer.get(i) = current;
+            }
+        }
+
+    }*/
     static void printAllAutomatas()
     {
         for (int i = 0; i < automataList.size(); i++) {
@@ -133,7 +172,7 @@ public class Automata implements Serializable {
         if (searchedNode != null) {
             for (int i = 0; i < searchedNode.transitions.size(); i++) {
                 Transition transition = searchedNode.transitions.get(i);
-                System.out.print(transition.getSymbol() + " -> " + transition.getNextNode().getId());
+                System.out.print(transition.getPreviousNode().getId() + " -> "+ transition.getSymbol() + " -> " + transition.getNextNode().getId());
                 System.out.println();
             }
         }
@@ -232,8 +271,8 @@ public class Automata implements Serializable {
         public void removeTransition(Transition transition){
             this.transitions.remove(transition);
         }
-        public void addTransition(char symbol, Node nextNode){
-            Transition transition = new Transition(symbol, nextNode);
+        public void addTransition(char symbol, Node nextNode, Node previousNode){
+            Transition transition = new Transition(symbol, nextNode,previousNode);
             this.transitions.add(transition);
         }
        
@@ -288,7 +327,7 @@ public class Automata implements Serializable {
                 Node nextNode = new Node();
                 //nextNode.setId(Integer.parseInt(scanner.nextLine()));
 
-                edittedNode.addTransition(symbol, nextNode);
+                edittedNode.addTransition(symbol, nextNode,edittedNode);
                 nodes.add(nextNode);
             }
             automataList.add(this);

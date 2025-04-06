@@ -51,9 +51,15 @@ public class Main {
                case 7:
                    Automata.displayAutomata();
                    break;
-
+               case 8:
+                   Automata.checkIfDeterministic();
+                   System.out.println(Automata.isDeterministic);
+                   break;
             default:
-                break;
+              /* case 9:
+                   Automata.Recognise(1,"a*bcab");
+
+                break;*/
            } 
         }
         
