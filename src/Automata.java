@@ -14,6 +14,7 @@ public class Automata implements Serializable {
     private static int maxNodeID = 0;
     static int maxID = 0;
     static boolean isDeterministic = true;
+
     static void checkIfDeterministic()
     {
         java.util.Scanner scanner = new java.util.Scanner(System.in);
@@ -38,7 +39,58 @@ public class Automata implements Serializable {
         }
 
     }
-    public static void Recognise(int id,String query)
+
+    public static void recogniseAutomata(String query, int id){
+
+        Automata currentAutomata = Automata.searchAutomata(id);
+        List<Character> characters = new ArrayList<>();
+        if (query.length() == 1)
+        {
+            characters.add(query.charAt(0));
+        }
+        else {
+            for (int i = 0; i < query.length(); i++) {
+                characters.add(query.charAt(i));
+            }
+        }
+        Boolean isRecognised = false;
+
+        Node currentNode = currentAutomata.findInitialNode();
+        for (int i = 0; i < characters.size(); i++) {
+
+            isRecognised = false;
+
+            for (int j = 0; j < currentNode.transitions.size(); j++) {
+                if (currentNode.transitions.get(j).getSymbol() == characters.get(i))
+                {
+                    isRecognised = true;
+                    currentNode = currentNode.transitions.get(j).getNextNode();
+                }
+            }
+            if (!isRecognised)
+            {
+                System.out.println("Автоматът не беше разпознат");
+                return;
+
+            }
+            if (currentNode.isFinal())
+            {
+                if (i == characters.size()-1 && isRecognised)
+                {
+                    System.out.println("Автоматът беше разпознат");
+                    return;
+                }
+                if (i == characters.size()-1&& !isRecognised)
+                {
+                    System.out.println("Автоматът не беше разпознат");
+                    return;
+                }
+            }
+        }
+        return;
+    }
+    //Save it for later might be useful for creating an automata
+    public static void createAutomata(int id,String query)
     {
         Boolean isRecognised = true;
         ArrayList<ArrayList<String>> tokenizers = new ArrayList<>();
@@ -111,8 +163,9 @@ public class Automata implements Serializable {
     {
         automataToBeDisplayed.checkInfoForTransition(displayed.getId());
         for (int i = 0; i < displayed.transitions.size(); i++) {
-
-            recurssion(displayed.transitions.get(i).getNextNode(), automataToBeDisplayed);
+            if(displayed.transitions.get(i).getNextNode() != displayed) {
+                recurssion(displayed.transitions.get(i).getNextNode(), automataToBeDisplayed);
+            }
         }
 
     }
@@ -219,7 +272,13 @@ public class Automata implements Serializable {
             }
         }
     }
-    public class Node implements Serializable{
+    public Automata(boolean bypass)
+    {
+        makeAnID();
+        this.id = maxID;
+
+    }
+    public  class Node implements Serializable{
 
         private int id;
         private boolean isFinal;
@@ -227,6 +286,59 @@ public class Automata implements Serializable {
         public ArrayList<Transition> transitions;
         private Node previousNode;
         private Node nextNode;
+        public static void init() {
+            Automata automata = new Automata(true);
+
+            // Create nodes with explicit unique IDs
+            Automata.Node node1 = automata.new Node(true); node1.setId(1); node1.setInitial(true); node1.setFinal(false);
+            Automata.Node node2 = automata.new Node(true); node2.setId(2); node2.setInitial(false); node2.setFinal(false);
+            Automata.Node node3 = automata.new Node(true); node3.setId(3); node3.setInitial(false); node3.setFinal(false);
+            Automata.Node node4 = automata.new Node(true); node4.setId(4); node4.setInitial(false); node4.setFinal(true);
+            Automata.Node node5 = automata.new Node(true); node5.setId(5); node5.setInitial(false); node5.setFinal(false);
+            Automata.Node node6 = automata.new Node(true); node6.setId(6); node6.setInitial(false); node6.setFinal(true);
+
+            // Set previous and next nodes for clear reference
+            node1.setNextNode(node2);
+            node2.setPreviousNode(node1); node2.setNextNode(node3);
+            node3.setPreviousNode(node2); node3.setNextNode(node4);
+            node4.setPreviousNode(node3); node4.setNextNode(node5);
+            node5.setPreviousNode(node4); node5.setNextNode(node6);
+            node6.setPreviousNode(node5); node6.setNextNode(node1); // cycle back
+
+            // Add all nodes to automata
+            automata.nodes.add(node1);
+            automata.nodes.add(node2);
+            automata.nodes.add(node3);
+            automata.nodes.add(node4);
+            automata.nodes.add(node5);
+            automata.nodes.add(node6);
+
+            // Define clear transitions as visualized
+            node1.addTransition('a', node2, node1);
+            node1.addTransition('b', node3, node1);
+            node1.addTransition('c', node5, node1);
+
+            node2.addTransition('d', node3, node2);
+            node2.addTransition('e', node4, node2);
+
+            node3.addTransition('f', node4, node3);
+            node3.addTransition('g', node5, node3);
+
+            node4.addTransition('h', node5, node4);
+            node4.addTransition('i', node6, node4);
+
+            node5.addTransition('j', node6, node5);
+            node5.addTransition('k', node1, node5);
+
+            node6.addTransition('l', node1, node6);
+            node6.addTransition('m', node2, node6);
+
+            Automata.automataList.add(automata);
+
+            System.out.println("Automata successfully created with explicitly set node IDs, ensuring correct visualization and transitions.");
+        }
+
+
 
 
         public int getId() {
@@ -277,14 +389,14 @@ public class Automata implements Serializable {
         public void setNextNode(Node nextNode) {
             this.nextNode = nextNode;
         }
-    
+
         public Node(){
             System.out.println("Създаване на възел");
             java.util.Scanner scanner = new java.util.Scanner(System.in);
 
             makeANodeID();
             this.id = maxNodeID;
-            
+
             System.out.println("Is this a final node? (true/false):");
             this.isFinal = Boolean.parseBoolean(scanner.nextLine());
             
@@ -309,6 +421,10 @@ public class Automata implements Serializable {
         }
 
 
+        public Node(boolean bypass)
+        {
+            this.transitions= new ArrayList<Transition>();
+        }
 
         public void removeTransition(Transition transition){
             this.transitions.remove(transition);
@@ -365,16 +481,24 @@ public class Automata implements Serializable {
                 else {
                     symbol = input.charAt(0);
                 }
-                System.out.println("Въведете id на следващият възел");
-                Node nextNode = new Node();
-                //nextNode.setId(Integer.parseInt(scanner.nextLine()));
+                System.out.println("Транзицията примка ли е? да/не");
+                input = scanner.nextLine();
+                if (input.trim().toLowerCase().equals("да"))
+                {
+                    edittedNode.addTransition(symbol, edittedNode,edittedNode);
+                }
+                else {
+                    Node nextNode = new Node();
+                    edittedNode.addTransition(symbol, nextNode,edittedNode);
+                    nodes.add(nextNode);
+                }
 
-                edittedNode.addTransition(symbol, nextNode,edittedNode);
-                nodes.add(nextNode);
+
+
             }
-            automataList.add(this);
+
         }
-        
+        automataList.add(this);
     }
     
 

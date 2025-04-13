@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Automata.ReadFromFile();
+        Automata.Node.init();
         Scanner scanner = new Scanner(System.in);
         int menu = 0;
         while (true) {
@@ -56,7 +56,7 @@ public class Main {
                    System.out.println(Automata.isDeterministic);
                    break;
                case 9:
-                   Automata.Recognise(1,"fasfafsafasf");
+                   Automata.recogniseAutomata("",5);
                    break;
             default:
 
