@@ -1,23 +1,29 @@
 import java.io.Serializable;
 
 public class Transition implements Serializable {
-    private Automata.Node previousNode;
+    private static final long serialVersionUID = 1L;
     private char symbol;
-    private Automata.Node nextNode;
+    private Node nextNode;
+    private Node previousNode;
 
-    public Transition(char symbol, Automata.Node nextNode, Automata.Node previousNode) {
+    public Transition(char symbol, Node nextNode) {
         this.symbol = symbol;
         this.nextNode = nextNode;
-        this.previousNode = previousNode;
     }
+
     public char getSymbol() {
         return symbol;
     }
 
-    public Automata.Node getNextNode() {
+    public Node getNextNode() {
         return nextNode;
     }
-    public Automata.Node getPreviousNode() {
+
+    public Node getPreviousNode() {
         return previousNode;
+    }
+
+    public void setPreviousNode(Node previousNode) {
+        this.previousNode = previousNode;
     }
 } 
