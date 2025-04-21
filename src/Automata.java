@@ -23,6 +23,7 @@ public class Automata implements Serializable, Cloneable {
     }
 
     public static void recogniseAutomata(String query, int id){
+        int countUncoditional = 0;
 
         Automata currentAutomata = Automata.searchAutomata(id);
         List<Character> characters = new ArrayList<>();
@@ -43,10 +44,12 @@ public class Automata implements Serializable, Cloneable {
             isRecognised = false;
 
             for (int j = 0; j < currentNode.getTransitions().size(); j++) {
-                if (currentNode.getTransitions().get(j).getSymbol() == characters.get(i))
+                if (currentNode.getTransitions().get(j).getSymbol() == characters.get(i) || currentNode.getTransitions().get(j).getSymbol() == 'e')
                 {
                     isRecognised = true;
                     currentNode = currentNode.getTransitions().get(j).getNextNode();
+                    if (currentNode.getTransitions().get(j).getSymbol() == 'e')
+                        countUncoditional++;
                 }
             }
             if (!isRecognised)
@@ -109,30 +112,35 @@ public class Automata implements Serializable, Cloneable {
 
     public static void concatenateAutomatas(Automata first, Automata second)
     {
-        Automata newAutomata = new Automata(true);
-        newAutomata = (Automata)second.clone();
-        newAutomata.findInitialNode().setInitial(false);
+        Automata automata2 = (Automata)second.clone();
+        Node secondInitial = second.findInitialNode();
+        second.findInitialNode().setInitial(false);
+        Automata automata1 = (Automata)first.clone();
+        automata2.findInitialNode().setInitial(false);
         ArrayList<Node> finalNodes = new ArrayList<Node>();
-        for (int i = 0; i < first.nodes.size(); i++) {
-            if (first.nodes.get(i).isFinal())
-                finalNodes.add(first.nodes.get(i));
+        for (int i = 0; i < automata1.nodes.size(); i++) {
+            if (automata1.nodes.get(i).isFinal()) {
+                finalNodes.add(automata1.nodes.get(i));
+                automata1.nodes.get(i).setFinal(false);
+            }
         }
         int biggestID = 0;
-        for (int i = 0; i < first.nodes.size(); i++) {
-            if (first.nodes.get(i).getId() > biggestID)
-                biggestID = first.nodes.get(i).getId();
+        for (int i = 0; i < automata1.nodes.size(); i++) {
+            if (automata1.nodes.get(i).getId() > biggestID)
+                biggestID = automata1.nodes.get(i).getId();
         }
         int firstNewNode = biggestID +1;
-        for (int i = 0; i < newAutomata.nodes.size(); i++) {
-            newAutomata.nodes.get(i).setId(++biggestID);
+        for (int i = 0; i < automata2.nodes.size(); i++) {
+            automata2.nodes.get(i).setId(++biggestID);
         }
         for (int i = 0; i < finalNodes.size(); i++) {
-            finalNodes.get(i).addTransition('e', second.findInitialNode());
+            finalNodes.get(i).addTransition('e', secondInitial);
         }
-        for (int i = 0; i < first.nodes.size(); i++) {
-            newAutomata.nodes.add(first.nodes.get(i));
+        for (int i = 0; i < automata1.nodes.size(); i++) {
+            automata2.nodes.add(automata1.nodes.get(i));
         }
-        automataList.add(newAutomata);
+        automata2.makeAnID();
+        automataList.add(automata2);
     }
     static void printAllAutomatas()
     {
@@ -184,6 +192,7 @@ public class Automata implements Serializable, Cloneable {
                 maxID = automataList.get(i).getId();
         }
         ++maxID;
+        this.id = maxID;
     }
     public void makeANodeID(){
         for (int i = 0; i < nodes.size(); i++) {
@@ -253,8 +262,7 @@ public class Automata implements Serializable, Cloneable {
 
     }
     public Automata() {
-        makeAnID();
-        this.id = maxID;
+        this.makeAnID();
         System.out.println("Създаване на автомат, ако искате да приключите напишете stop ");
         Scanner scanner = new Scanner(System.in);
         String input = "";

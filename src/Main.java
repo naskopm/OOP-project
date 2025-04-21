@@ -57,13 +57,13 @@ public class Main {
                    System.out.println(Automata.isDeterministic);
                    break;
                case 9:
-                   Automata.recogniseAutomata("",5);
+                   Automata.recogniseAutomata("aa",3);
                    break;
                case 10:
                    Automata.createAutomata(2,"(ab + abc + (ac)(ab)) + (ab + dc(cd)");
                    break;
                case 11:
-                   Automata.concatenateAutomatas(Automata.automataList.get(4), Automata.automataList.get(5));
+                   Automata.concatenateAutomatas(Automata.automataList.get(0), Automata.automataList.get(1));
             default:
 
            } 
