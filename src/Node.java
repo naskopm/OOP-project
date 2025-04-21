@@ -59,20 +59,34 @@ public class Node implements Serializable {
         this.nextNode = nextNode;
     }
 
-    public Node() {
+    public Node(Automata currentAutomata){
         System.out.println("Създаване на възел");
         java.util.Scanner scanner = new java.util.Scanner(System.in);
-        
-        System.out.println("Enter node ID:");
-        this.id = Integer.parseInt(scanner.nextLine());
-        
+
+        currentAutomata.makeANodeID();
+        this.id = currentAutomata.maxNodeID;
+
         System.out.println("Is this a final node? (true/false):");
         this.isFinal = Boolean.parseBoolean(scanner.nextLine());
-        
+
         System.out.println("Is this an initial node? (true/false):");
         this.isInitial = Boolean.parseBoolean(scanner.nextLine());
-        
+
         this.transitions = new ArrayList<Transition>();
+
+        if(!isInitial){
+            System.out.println("Enter previous node ID:");
+            int previousNodeId = Integer.parseInt(scanner.nextLine());
+            // Assuming we have access to the nodes list from Automata
+            for(Node node : currentAutomata.nodes){
+                if(node.getId() == previousNodeId){
+                    this.previousNode = node;
+                    break;
+                }
+            }
+        }
+        currentAutomata.nodes.add(this);
+        System.out.println("Създадохте нов възел с id: " + this.id);
     }
 
     public Node(boolean bypass) {
@@ -139,12 +153,12 @@ public class Node implements Serializable {
         Automata automata = new Automata(true);
 
         // Create nodes with explicit unique IDs
-        Node node1 = new Node(true); node1.setId(1); node1.setInitial(true); node1.setFinal(false);
-        Node node2 = new Node(true); node2.setId(2); node2.setInitial(false); node2.setFinal(false);
-        Node node3 = new Node(true); node3.setId(3); node3.setInitial(false); node3.setFinal(false);
-        Node node4 = new Node(true); node4.setId(4); node4.setInitial(false); node4.setFinal(true);
-        Node node5 = new Node(true); node5.setId(5); node5.setInitial(false); node5.setFinal(false);
-        Node node6 = new Node(true); node6.setId(6); node6.setInitial(false); node6.setFinal(true);
+        Node node1 = new Node(automata); node1.setId(1); node1.setInitial(true); node1.setFinal(false);
+        Node node2 = new Node(automata); node2.setId(2); node2.setInitial(false); node2.setFinal(false);
+        Node node3 = new Node(automata); node3.setId(3); node3.setInitial(false); node3.setFinal(false);
+        Node node4 = new Node(automata); node4.setId(4); node4.setInitial(false); node4.setFinal(true);
+        Node node5 = new Node(automata); node5.setId(5); node5.setInitial(false); node5.setFinal(false);
+        Node node6 = new Node(automata); node6.setId(6); node6.setInitial(false); node6.setFinal(true);
 
         // Set previous and next nodes for clear reference
         node1.setNextNode(node2);
@@ -153,14 +167,6 @@ public class Node implements Serializable {
         node4.setPreviousNode(node3); node4.setNextNode(node5);
         node5.setPreviousNode(node4); node5.setNextNode(node6);
         node6.setPreviousNode(node5); node6.setNextNode(node1); // cycle back
-
-        // Add all nodes to automata
-        automata.nodes.add(node1);
-        automata.nodes.add(node2);
-        automata.nodes.add(node3);
-        automata.nodes.add(node4);
-        automata.nodes.add(node5);
-        automata.nodes.add(node6);
 
         // Define clear transitions as visualized
         node1.addTransition('a', node2);

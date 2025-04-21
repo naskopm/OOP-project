@@ -10,7 +10,7 @@ public class Automata implements Serializable, Cloneable {
     public ArrayList<Node> nodes = new ArrayList<Node>();
     public static Character alphabet [] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     public static List<Automata> automataList = new ArrayList<>();
-    private static int maxNodeID = 0;
+    public int maxNodeID = 0;
     static int maxID = 0;
     static boolean isDeterministic = true;
 
@@ -111,6 +111,7 @@ public class Automata implements Serializable, Cloneable {
     {
         Automata newAutomata = new Automata(true);
         newAutomata = (Automata)second.clone();
+        newAutomata.findInitialNode().setInitial(false);
         ArrayList<Node> finalNodes = new ArrayList<Node>();
         for (int i = 0; i < first.nodes.size(); i++) {
             if (first.nodes.get(i).isFinal())
@@ -144,18 +145,21 @@ public class Automata implements Serializable, Cloneable {
         java.util.Scanner scanner = new java.util.Scanner(System.in);
         int id = Integer.parseInt(scanner.nextLine());
         Automata automataToBeDisplayed = Automata.searchAutomata(id);
-        HashSet<Integer> alreadyDispayed = new HashSet<Integer>();
-        automataToBeDisplayed.findInitialNode().recurssion();
+        HashSet<Integer> visited = new HashSet<>();
+        recurssion(automataToBeDisplayed.findInitialNode(), automataToBeDisplayed,visited);
     }
-    static void recurssion(Node displayed, Automata automataToBeDisplayed, HashSet<Integer> alreadyDispayed )
+    static void recurssion(Node displayed, Automata automataToBeDisplayed,HashSet visited)
     {
-        automataToBeDisplayed.checkInfoForTransition(displayed.getId());
-        for (int i = 0; i < displayed.getTransitions().size(); i++) {
-            if(displayed.getTransitions().get(i).getNextNode() != displayed && !alreadyDispayed.contains(displayed.getId())) {
-                alreadyDispayed.add(displayed.getId());
-                recurssion(displayed.getTransitions().get(i).getNextNode(), automataToBeDisplayed,alreadyDispayed);
+
+
+        for (int i = 0; i < displayed.transitions.size(); i++) {
+            if(displayed.transitions.get(i).getNextNode() != displayed && !visited.contains(displayed.getId())) {
+                visited.add(displayed.getId());
+                automataToBeDisplayed.checkInfoForTransition(displayed.getId());
+                recurssion(displayed.transitions.get(i).getNextNode(), automataToBeDisplayed, visited);
             }
         }
+
 
     }
 
@@ -181,7 +185,7 @@ public class Automata implements Serializable, Cloneable {
         }
         ++maxID;
     }
-    private void makeANodeID(){
+    public void makeANodeID(){
         for (int i = 0; i < nodes.size(); i++) {
             if (maxNodeID < nodes.get(i).getId())
                 maxNodeID = nodes.get(i).getId();
@@ -263,7 +267,7 @@ public class Automata implements Serializable, Cloneable {
             int nodeId = Integer.parseInt(input);
             Node edittedNode = null;
             if (nodes.size() == 0) {
-                edittedNode = new Node();
+                edittedNode = new Node(this  );
             }
             
             for(Node searchedNode : nodes) {
@@ -285,9 +289,9 @@ public class Automata implements Serializable, Cloneable {
                     break;
                 }
                 char symbol = input.charAt(0);
-                Node nextNode = new Node();
+                Node nextNode = new Node(this);
                 edittedNode.addTransition(symbol, nextNode);
-                nodes.add(nextNode);
+               // nodes.add(nextNode);
             }
         }
         automataList.add(this);

@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Node.init();
-        Automata.ReadFromFile();
+      //  Node.init();
+       Automata.ReadFromFile();
         Scanner scanner = new Scanner(System.in);
         int menu = 0;
         while (true) {
@@ -63,7 +63,7 @@ public class Main {
                    Automata.createAutomata(2,"(ab + abc + (ac)(ab)) + (ab + dc(cd)");
                    break;
                case 11:
-                   Automata.concatenateAutomatas(Automata.automataList.get(0), Automata.automataList.get(1));
+                   Automata.concatenateAutomatas(Automata.automataList.get(4), Automata.automataList.get(5));
             default:
 
            } 
