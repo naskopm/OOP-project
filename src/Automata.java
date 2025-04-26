@@ -7,261 +7,61 @@ import java.util.*;
 public class Automata implements Serializable, Cloneable {
     private static final long serialVersionUID =  -8172004642272343082L;
     private int id;
-    public ArrayList<Node> nodes = new ArrayList<Node>();
-    public static Character alphabet [] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    private ArrayList<Node> nodes;
+    private static Character alphabet [] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     public static List<Automata> automataList = new ArrayList<>();
     public int maxNodeID = 0;
-    static int maxID = 0;
-    static boolean isDeterministic = true;
+    private static int maxID = 0;
+    private static boolean isDeterministic = true;
 
-    static void checkIfDeterministic()
-    {
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
-        int id = Integer.parseInt(scanner.nextLine());
-        Automata automataToBeDisplayed = Automata.searchAutomata(id);
-        automataToBeDisplayed.findInitialNode().recurssionForDeterminism();
+    // Getters and Setters
+    public ArrayList<Node> getNodes() {
+        return nodes;
     }
 
-    public static void recogniseAutomata(String query, int id){
-        int countUncoditional = 0;
-
-        Automata currentAutomata = Automata.searchAutomata(id);
-        List<Character> characters = new ArrayList<>();
-        if (query.length() == 1)
-        {
-            characters.add(query.charAt(0));
-        }
-        else {
-            for (int i = 0; i < query.length(); i++) {
-                characters.add(query.charAt(i));
-            }
-        }
-        Boolean isRecognised = false;
-
-        Node currentNode = currentAutomata.findInitialNode();
-        for (int i = 0; i < characters.size(); i++) {
-
-            isRecognised = false;
-
-            for (int j = 0; j < currentNode.getTransitions().size(); j++) {
-                if (currentNode.getTransitions().get(j).getSymbol() == characters.get(i) || currentNode.getTransitions().get(j).getSymbol() == 'e')
-                {
-                    isRecognised = true;
-                    currentNode = currentNode.getTransitions().get(j).getNextNode();
-                    if (currentNode.getTransitions().get(j).getSymbol() == 'e')
-                        countUncoditional++;
-                }
-            }
-            if (!isRecognised)
-            {
-                System.out.println("Автоматът не беше разпознат");
-                return;
-
-            }
-            if (currentNode.isFinal())
-            {
-                if (i == characters.size()-1 && isRecognised)
-                {
-                    System.out.println("Автоматът беше разпознат");
-                    return;
-                }
-                if (i == characters.size()-1&& !isRecognised)
-                {
-                    System.out.println("Автоматът не беше разпознат");
-                    return;
-                }
-            }
-        }
-        return;
-    }
-    //Save it for later might be useful for creating an automata
-    public static void createAutomata(int id,String query)
-    {
-
-    }
-    @Override
-    public Automata clone() {
-        try {
-            Automata copy = (Automata) super.clone();
-            // deep‐copy the node list
-            Map<Node,Node> map = new HashMap<>();
-            copy.nodes = new ArrayList<>();
-            // 1) clone all nodes
-            for (Node n : this.nodes) {
-                Node c = new Node(true);
-                c.setId(n.getId());
-                c.setInitial(n.isInitial());
-                c.setFinal(n.isFinal());
-                c.setTransitions(new ArrayList<>());
-                map.put(n, c);
-                copy.nodes.add(c);
-            }
-            // 2) clone all transitions
-            for (Node n : this.nodes) {
-                Node cn = map.get(n);
-                for (Transition t : n.getTransitions()) {
-                    Node tgt = map.get(t.getNextNode());
-                    cn.addTransition(t.getSymbol(), tgt);
-                }
-            }
-            return copy;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError(e);
-        }
+    public void addNode(Node node) {
+        this.nodes.add(node);
     }
 
-    public static void concatenateAutomatas(Automata first, Automata second)
-    {
-        Automata automata2 = (Automata)second.clone();
-        Node secondInitial = second.findInitialNode();
-        second.findInitialNode().setInitial(false);
-        Automata automata1 = (Automata)first.clone();
-        automata2.findInitialNode().setInitial(false);
-        ArrayList<Node> finalNodes = new ArrayList<Node>();
-        for (int i = 0; i < automata1.nodes.size(); i++) {
-            if (automata1.nodes.get(i).isFinal()) {
-                finalNodes.add(automata1.nodes.get(i));
-                automata1.nodes.get(i).setFinal(false);
-            }
-        }
-        int biggestID = 0;
-        for (int i = 0; i < automata1.nodes.size(); i++) {
-            if (automata1.nodes.get(i).getId() > biggestID)
-                biggestID = automata1.nodes.get(i).getId();
-        }
-        int firstNewNode = biggestID +1;
-        for (int i = 0; i < automata2.nodes.size(); i++) {
-            automata2.nodes.get(i).setId(++biggestID);
-        }
-        for (int i = 0; i < finalNodes.size(); i++) {
-            finalNodes.get(i).addTransition('e', secondInitial);
-        }
-        for (int i = 0; i < automata1.nodes.size(); i++) {
-            automata2.nodes.add(automata1.nodes.get(i));
-        }
-        automata2.makeAnID();
-        automataList.add(automata2);
-    }
-    static void printAllAutomatas()
-    {
-        for (int i = 0; i < automataList.size(); i++) {
-            System.out.print("Automata id: " + automataList.get(i).getId()+ " ");
-        }
-    }
-    static void displayAutomata()
-    {
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
-        int id = Integer.parseInt(scanner.nextLine());
-        Automata automataToBeDisplayed = Automata.searchAutomata(id);
-        HashSet<Integer> visited = new HashSet<>();
-        recurssion(automataToBeDisplayed.findInitialNode(), automataToBeDisplayed,visited);
-    }
-    static void recurssion(Node displayed, Automata automataToBeDisplayed,HashSet visited)
-    {
-
-
-        for (int i = 0; i < displayed.transitions.size(); i++) {
-            if(displayed.transitions.get(i).getNextNode() != displayed && !visited.contains(displayed.getId())) {
-                visited.add(displayed.getId());
-                automataToBeDisplayed.checkInfoForTransition(displayed.getId());
-                recurssion(displayed.transitions.get(i).getNextNode(), automataToBeDisplayed, visited);
-            }
-        }
-
-
+    public static Character[] getAlphabet() {
+        return alphabet;
     }
 
-    public Node findInitialNode()
-    {
-        for (int i = 0; i < nodes.size(); i++) {
-            if (nodes.get(i).isInitial())
-            {
-                return nodes.get(i);
-            }
-        }
-        return null;
-    }
-    public boolean checkIfEmptyAlphabet(){
-        Node initialNode = findInitialNode();
-        return initialNode != null && initialNode.checkIfEmptyAlphabet();
+    public static List<Automata> getAutomataList() {
+        return automataList;
     }
 
-    private void makeAnID(){
-        for (int i = 0; i < automataList.size(); i++) {
-            if (maxID < automataList.get(i).getId())
-                maxID = automataList.get(i).getId();
-        }
-        ++maxID;
-        this.id = maxID;
+    public int getMaxNodeID() {
+        return maxNodeID;
     }
-    public void makeANodeID(){
-        for (int i = 0; i < nodes.size(); i++) {
-            if (maxNodeID < nodes.get(i).getId())
-                maxNodeID = nodes.get(i).getId();
-        }
-        ++maxNodeID;
-    }
-    public static Automata searchAutomata(int id)
-    {
-        for (int i = 0; i < automataList.size(); i++) {
-            if (id == automataList.get(i).getId()) {
-                return  automataList.get(i);
-            }
-        }
-        return null;
-    }
-    static void SaveToFile()
-    {
-        try (FileOutputStream fileOut = new FileOutputStream("AutomataList.ser");
-             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
-            out.writeObject(automataList);
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
-    }
-    static void ReadFromFile() {
-        try (FileInputStream fileIn = new FileInputStream("AutomataList.ser");
-             ObjectInputStream in = new ObjectInputStream(fileIn)) {
 
-            // Read and cast the object
-            automataList = (List<Automata>) in.readObject();
+    public void setMaxNodeID(int maxNodeID) {
+        this.maxNodeID = maxNodeID;
+    }
 
-        } catch (IOException i) {
-            i.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public static boolean isDeterministic() {
+        return isDeterministic;
     }
-    public int getId()
-    {
-        return this.id;
-    }
-    
-    public void checkInfoForTransition(int id)
-    {
-        Node searchedNode = null;
-        for(int i=0; i< nodes.size(); i++)
-        {
-            if (nodes.get(i).getId() == id) {
-                searchedNode = nodes.get(i);
-                break;
-            }
-        }
-        if (searchedNode != null) {
-            for (int i = 0; i < searchedNode.getTransitions().size(); i++) {
-                Transition transition = searchedNode.getTransitions().get(i);
-                System.out.print(transition.getPreviousNode().getId() + " -> "+ transition.getSymbol() + " -> " + transition.getNextNode().getId());
-                System.out.println();
-            }
-        }
-    }
-    public Automata(boolean bypass)
-    {
-        makeAnID();
-        this.id = maxID;
 
+    public static void setDeterministic(boolean isDeterministic) {
+        Automata.isDeterministic = isDeterministic;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    // Constructor
+    public Automata(boolean bypass) {
+        this.nodes = new ArrayList<>();
+    }
+
     public Automata() {
+        this.nodes = new ArrayList<>();
         this.makeAnID();
         System.out.println("Създаване на автомат, ако искате да приключите напишете stop ");
         Scanner scanner = new Scanner(System.in);
@@ -275,7 +75,7 @@ public class Automata implements Serializable, Cloneable {
             int nodeId = Integer.parseInt(input);
             Node edittedNode = null;
             if (nodes.size() == 0) {
-                edittedNode = new Node(this  );
+                edittedNode = new Node(this);
             }
             
             for(Node searchedNode : nodes) {
@@ -299,9 +99,70 @@ public class Automata implements Serializable, Cloneable {
                 char symbol = input.charAt(0);
                 Node nextNode = new Node(this);
                 edittedNode.addTransition(symbol, nextNode);
-               // nodes.add(nextNode);
             }
         }
         automataList.add(this);
+    }
+
+    // Node management methods
+    public Node findInitialNode() {
+        for (Node node : nodes) {
+            if (node.isInitial()) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+
+
+    public void makeAnID() {
+        for (Automata automata : automataList) {
+            if (maxID < automata.getId()) {
+                maxID = automata.getId();
+            }
+        }
+        ++maxID;
+        this.setId(maxID);
+    }
+
+    @Override
+    public Automata clone() {
+        try {
+            Automata copy = (Automata) super.clone();
+            Map<Node, Node> map = new HashMap<>();
+            copy.nodes = new ArrayList<>();
+            
+            // Clone all nodes
+            for (Node n : this.nodes) {
+                Node c = new Node(copy,true);
+                c.setInitial(n.isInitial());
+                c.setFinal(n.isFinal());
+                c.setTransitions(new ArrayList<>());
+                c.setId(n.getId());
+                map.put(n, c);
+            }
+            
+            // Clone all transitions
+            for (Node n : this.nodes) {
+                Node cn = map.get(n);
+                for (Transition t : n.getTransitions()) {
+                    Node tgt = map.get(t.getNextNode());
+                    cn.addTransition(t.getSymbol(), tgt);
+                }
+            }
+            return copy;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    public static Automata searchAutomata(int id) {
+        for (Automata automata : automataList) {
+            if (automata.getId() == id) {
+                return automata;
+            }
+        }
+        return null;
     }
 }
