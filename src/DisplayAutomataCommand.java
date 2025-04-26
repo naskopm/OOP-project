@@ -13,41 +13,22 @@ public class DisplayAutomataCommand implements Command {
         int id = Integer.parseInt(scanner.nextLine());
         Automata automataToBeDisplayed = AutomataUtils.searchAutomata(id);
         if (automataToBeDisplayed != null) {
-            HashSet<Integer> visited = new HashSet<>();
-            recurssion(automataToBeDisplayed.findInitialNode(), automataToBeDisplayed, visited);
+            displayAutomata(automataToBeDisplayed);
         } else {
             System.out.println("Не е намерен автомат с ID: " + id);
         }
     }
 
-    private void recurssion(Node displayed, Automata automataToBeDisplayed, HashSet<Integer> visited) {
-        if (displayed.getId() == 4)
-        {
-            System.out.printf("visited");
-        }
-        for (Transition transition : displayed.getTransitions()) {
-            if(transition.getNextNode() != displayed && !visited.contains(displayed.getId())) {
-                visited.add(displayed.getId());
-                recurssion(transition.getNextNode(), automataToBeDisplayed, visited);
-                checkInfoForTransition(automataToBeDisplayed, displayed.getId());
+    private void displayAutomata(Automata automataToBeDisplayed) {
+        for(Node node: automataToBeDisplayed.getNodes()){
+            for (Transition transition: node.getTransitions()){
+                checkInfoForTransition(transition);
             }
         }
     }
 
-    private void checkInfoForTransition(Automata automata, int id) {
-        Node searchedNode = null;
-        for(Node node : automata.getNodes()) {
-            if (node.getId() == id) {
-                searchedNode = node;
-                break;
-            }
-        }
-        if (searchedNode != null) {
-            for (Transition transition : searchedNode.getTransitions()) {
-                System.out.print(transition.getPreviousNode().getId() + " -> "+ transition.getSymbol() + " -> " + transition.getNextNode().getId());
-                System.out.println();
-            }
-        }
+    private void checkInfoForTransition(Transition transition) {
+        System.out.println(transition.getPreviousNode().getId() + " -> " + transition.getSymbol() + " -> " + transition.getNextNode().getId());
     }
 
     @Override

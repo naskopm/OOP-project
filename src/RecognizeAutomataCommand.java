@@ -1,6 +1,8 @@
+import java.security.cert.TrustAnchor;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class RecognizeAutomataCommand implements Command {
     @Override
@@ -14,60 +16,57 @@ public class RecognizeAutomataCommand implements Command {
         recognizeAutomata(word, id);
     }
 
-    private void recognizeAutomata(String query, int id) {
+    private void recognizeAutomata(String word, int id) {
         Automata currentAutomata = AutomataUtils.searchAutomata(id);
         if (currentAutomata == null) {
             System.out.println("Не е намерен автомат с ID: " + id);
             return;
         }
 
-        List<Character> characters = new ArrayList<>();
-        if (query.length() == 1) {
-            characters.add(query.charAt(0));
-        } else {
-            for (int i = 0; i < query.length(); i++) {
-                characters.add(query.charAt(i));
-            }
-        }
-        boolean isRecognised = false;
-
-        Node currentNode = currentAutomata.findInitialNode();
-        if (currentNode == null) {
+        Node initialNode = currentAutomata.findInitialNode();
+        if (initialNode == null) {
             System.out.println("Не е намерено начално състояние!");
             return;
         }
 
-        for (int i = 0; i < characters.size(); i++) {
-            isRecognised = false;
+        // Use a stack to track current state and position in word
+        Stack<StatePosition> stack = new Stack<>();
+        stack.push(new StatePosition(initialNode, 0));
 
-            for (Transition transition : currentNode.getTransitions()) {
-                if (transition.getSymbol() == characters.get(i)) {
-                    isRecognised = true;
-                    currentNode = transition.getNextNode();
-                    break;
-                }
-                if (transition.getSymbol() == 'e')
-                {
-                    isRecognised = true;
-                    currentNode = transition.getNextNode();
-                    i--;
-                    break;
-                }
-            }
-            if (!isRecognised) {
-                System.out.println("Автоматът не беше разпознат");
+        while (!stack.isEmpty()) {
+            StatePosition current = stack.pop();
+            Node currentNode = current.node;
+            int currentPosition = current.position;
+
+            // If we've processed all characters and are in a final state
+            if (currentPosition == word.length() && currentNode.isFinal()) {
+                System.out.println("Изразът е разпознат");
                 return;
             }
-            if (currentNode.isFinal()) {
-                if (i == characters.size()-1 && isRecognised) {
-                    System.out.println("Автоматът беше разпознат");
-                    return;
-                }
-                if (i == characters.size()-1 && !isRecognised) {
-                    System.out.println("Автоматът не беше разпознат");
-                    return;
+
+            // Process all transitions
+            for (Transition transition : currentNode.getTransitions()) {
+                if (transition.getSymbol() == 'e') {
+                    // Epsilon transition - don't consume any input
+                    stack.push(new StatePosition(transition.getNextNode(), currentPosition));
+                } else if (currentPosition < word.length() && transition.getSymbol() == word.charAt(currentPosition)) {
+                    // Regular transition - consume one character
+                    stack.push(new StatePosition(transition.getNextNode(), currentPosition + 1));
                 }
             }
+        }
+
+        System.out.println("Изразът не беше разпознат");
+    }
+
+    // Helper class to track state and position in word
+    private static class StatePosition {
+        Node node;
+        int position;
+
+        StatePosition(Node node, int position) {
+            this.node = node;
+            this.position = position;
         }
     }
 

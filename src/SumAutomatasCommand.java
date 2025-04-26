@@ -7,6 +7,7 @@ public class SumAutomatasCommand implements Command{
         Scanner scanner = new Scanner(System.in);
         int automataId = Integer.parseInt(scanner.nextLine());
         Automata first = AutomataUtils.searchAutomata(automataId);
+        System.out.print("Въведете ID на автомата: ");
         automataId = Integer.parseInt(scanner.nextLine());
         Automata second = AutomataUtils.searchAutomata(automataId);
         unionAutomatas(first, second);
@@ -21,6 +22,7 @@ public class SumAutomatasCommand implements Command{
         secondCopy = second.clone();
         Node initialNode = firstCopy.findInitialNode();
         initialNode.addTransition('e', secondCopy.findInitialNode());
+        firstCopy.setMaxNodeID(firstCopy.maxNodeID - 1);
         secondCopy.findInitialNode().setInitial(false);
         for(Node node:secondCopy.getNodes())
         {
