@@ -1,6 +1,7 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 public class Node implements Serializable {
@@ -10,25 +11,24 @@ public class Node implements Serializable {
     private boolean isInitial;
     private ArrayList<Transition> transitions;
     private Node previousNode;
-    private Node nextNode;
     private final Automata parentAutomata;
 
     public Node(Automata parentAutomata) {
-        this.parentAutomata = parentAutomata;
-        this.transitions = new ArrayList<Transition>();
-        System.out.println("Създаване на възел");
         java.util.Scanner scanner = new java.util.Scanner(System.in);
-        
-        this.makeANodeID(parentAutomata);
-        this.id = parentAutomata.getMaxNodeID();
-        
-        System.out.println("Is this a final node? (true/false):");
-        this.isFinal = Boolean.parseBoolean(scanner.nextLine());
-        
-        System.out.println("Is this an initial node? (true/false):");
-        this.isInitial = Boolean.parseBoolean(scanner.nextLine());
-        
-        if(!isInitial){
+        this.parentAutomata = parentAutomata;
+
+
+            this.transitions = new ArrayList<Transition>();
+            this.makeANodeID(parentAutomata);
+            this.id = parentAutomata.getMaxNodeID();
+
+            System.out.println("Is this a final node? (true/false):");
+            this.isFinal = Boolean.parseBoolean(scanner.nextLine());
+
+            System.out.println("Is this an initial node? (true/false):");
+            this.isInitial = Boolean.parseBoolean(scanner.nextLine());
+
+
             System.out.println("Enter previous node ID:");
             int previousNodeId = Integer.parseInt(scanner.nextLine());
             for(Node node : parentAutomata.getNodes()){
@@ -37,10 +37,41 @@ public class Node implements Serializable {
                     break;
                 }
             }
+        System.out.println("Добавен възел с id: "+this.getId());
+        parentAutomata.getNodes().add(this);
+            String input;
+            System.out.println("Въведете броя на транзициите");
+            input = scanner.nextLine();
+            int numberOfTransitions = Integer.parseInt(input);
+            for(int i = 0; i < numberOfTransitions; i++) {
+                System.out.println("Въведете символа на транзицията");
+                input = scanner.nextLine();
+                if (input.equals("stop")) {
+                    break;
+                }
+                char symbol = input.charAt(0);
+                Node nextNode = new Node(parentAutomata,true,true);
+                this.addTransition(symbol, nextNode);
+            }
+        Node updateTransitions = parentAutomata.searchNode(previousNodeId);
+        Boolean doesTransitionExists= false;
+        if (updateTransitions.getTransitions() != null)
+        {
+            for(Transition transition: updateTransitions.getTransitions()){
+                if (transition.getPreviousNode().equals(this)){
+                    doesTransitionExists = true;
+                }
+            }
         }
-        parentAutomata.addNode(this);
-        System.out.println("Създадохте нов възел с id: " + this.id);
-    }
+        if (!doesTransitionExists){
+            updateTransitions.addTransition('e',this);
+            parentAutomata.getNodes().add(this);
+            System.out.println("Добавен възел с id: "+this.getId());
+        }
+
+        }
+
+
     public void makeANodeID(Automata editted) {
         for (Node node : editted.getNodes()) {
             if (editted.maxNodeID < node.getId()) {
@@ -58,6 +89,36 @@ public class Node implements Serializable {
         this.makeANodeID(parentAutomata);
         this.id = parentAutomata.getMaxNodeID();
         parentAutomata.addNode(this);
+    }
+    public Node(Automata parentAutomata, boolean isOverload,boolean secondOverload)
+    {
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        this.parentAutomata = parentAutomata;
+
+
+        this.transitions = new ArrayList<Transition>();
+        this.makeANodeID(parentAutomata);
+        this.id = parentAutomata.getMaxNodeID();
+
+        System.out.println("Is this a final node? (true/false):");
+        this.isFinal = Boolean.parseBoolean(scanner.nextLine());
+
+        System.out.println("Is this an initial node? (true/false):");
+        this.isInitial = Boolean.parseBoolean(scanner.nextLine());
+
+
+        System.out.println("Enter previous node ID:");
+        int previousNodeId = Integer.parseInt(scanner.nextLine());
+        for(Node node : parentAutomata.getNodes()){
+            if(node.getId() == previousNodeId){
+                this.previousNode = node;
+                break;
+            }
+        }
+        System.out.println();
+    this.makeANodeID(parentAutomata);
+    parentAutomata.addNode(this);
+    System.out.println("Добавен възел с id: "+this.getId());
     }
     // Getters and Setters
     public int getId() {
@@ -100,13 +161,6 @@ public class Node implements Serializable {
         this.previousNode = previousNode;
     }
 
-    public Node getNextNode() {
-        return nextNode;
-    }
-
-    public void setNextNode(Node nextNode) {
-        this.nextNode = nextNode;
-    }
 
     public Automata getParentAutomata() {
         return parentAutomata;

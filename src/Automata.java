@@ -59,49 +59,44 @@ public class Automata implements Serializable, Cloneable {
     public Automata(boolean bypass) {
         this.nodes = new ArrayList<>();
     }
+    private void AddNewTransition(Automata parentAutomata) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Въведете към кой възел искате да добавите транзиция");
+        int id = Integer.parseInt(scanner.nextLine());
+        Node toBeEditted = this.searchNode(id);
+        System.out.println("Към кой възел искате да сочи новата транзиция");
+        id = Integer.parseInt(scanner.nextLine());
+        System.out.println("С каква буква да бъде транзицията");
+        String converter = scanner.nextLine();
+        char symbol = converter.trim().charAt(0);
+        toBeEditted.addTransition(symbol,toBeEditted);
 
+    }
     public Automata() {
         this.nodes = new ArrayList<>();
         this.makeAnID();
         System.out.println("Създаване на автомат, ако искате да приключите напишете stop ");
         Scanner scanner = new Scanner(System.in);
         String input = "";
+        Boolean shouldBreak = false;
         while(!input.equals("stop")) {
-            System.out.println("Въведете към кой възел искате да добавите транзиция");
-            input = scanner.nextLine();
-            if (input.equals("stop")) {
-                break;
-            }
-            int nodeId = Integer.parseInt(input);
-            Node edittedNode = null;
-            if (nodes.size() == 0) {
-                edittedNode = new Node(this);
-            }
-            
-            for(Node searchedNode : nodes) {
-                if(searchedNode.getId() == nodeId) {
-                    edittedNode = searchedNode;
+            System.out.println("Въведете дали искате да добавите нов възел - 1, нова транзиция към съществуващ възел - 2, или да приключите -3");
+            int option = Integer.parseInt(scanner.nextLine());
+            switch (option) {
+                case 1:
+                    Node node = new Node(this);
                     break;
-                }
-            }
-            System.out.println("Въведете броя на транзициите");
-            input = scanner.nextLine();
-            if (input.equals("stop")) {
-                break;
-            }
-            int numberOfTransitions = Integer.parseInt(input);
-            for(int i = 0; i < numberOfTransitions; i++) {
-                System.out.println("Въведете символа на транзицията");
-                input = scanner.nextLine();
-                if (input.equals("stop")) {
+                case 2:
+                    AddNewTransition(this);
                     break;
-                }
-                char symbol = input.charAt(0);
-                Node nextNode = new Node(this);
-                edittedNode.addTransition(symbol, nextNode);
+                case 3:
+                    shouldBreak = true;
+                    break;
             }
+            if (shouldBreak)
+                break;
         }
-        automataList.add(this);
+        Automata.automataList.add(this);
     }
 
     // Node management methods
@@ -161,6 +156,15 @@ public class Automata implements Serializable, Cloneable {
         for (Automata automata : automataList) {
             if (automata.getId() == id) {
                 return automata;
+            }
+        }
+        return null;
+    }
+    public Node searchNode(int id){
+        for (int i = 0; i < this.nodes.size(); i++) {
+            if (this.nodes.get(i).getId() == id)
+            {
+                return this.nodes.get(i);
             }
         }
         return null;

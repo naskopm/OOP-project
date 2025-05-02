@@ -28,7 +28,8 @@ public class CommandManager {
         commands.put(10, new CreateAutomataFromRegexCommand());
         commands.put(11, new ConcatenateAutomatasCommand());
         commands.put(12, new SumAutomatasCommand());
-        commands.put(13, new ExitCommand());
+        commands.put(13, new findLoops());
+        commands.put(14, new ExitCommand());
     }
 
     public void displayMenu() {
@@ -54,7 +55,7 @@ public class CommandManager {
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
             
-            if (choice == 13) { // Exit command
+            if (choice == 14) { // Exit command
                 break;
             }
             
