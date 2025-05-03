@@ -21,9 +21,10 @@ public class DisplayAutomataCommand implements Command {
 
     private void displayAutomata(Automata automataToBeDisplayed) {
         for(Node node: automataToBeDisplayed.getNodes()){
-            for (Transition transition: node.getTransitions()){
-                checkInfoForTransition(transition);
-            }
+                for (Transition transition: node.getTransitions()){
+                    if (transition.getNextNode() != null)
+                        checkInfoForTransition(transition);
+                }
         }
     }
 

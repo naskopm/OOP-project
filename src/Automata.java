@@ -63,13 +63,14 @@ public class Automata implements Serializable, Cloneable {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Въведете към кой възел искате да добавите транзиция");
         int id = Integer.parseInt(scanner.nextLine());
-        Node toBeEditted = this.searchNode(id);
+        Node toBeEditted = parentAutomata.searchNode(id);
         System.out.println("Към кой възел искате да сочи новата транзиция");
         id = Integer.parseInt(scanner.nextLine());
+        Node transitioned = parentAutomata.searchNode(id);
         System.out.println("С каква буква да бъде транзицията");
         String converter = scanner.nextLine();
         char symbol = converter.trim().charAt(0);
-        toBeEditted.addTransition(symbol,toBeEditted);
+        toBeEditted.addTransition(symbol,transitioned);
 
     }
     public Automata() {

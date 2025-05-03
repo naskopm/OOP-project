@@ -14,7 +14,6 @@ public class Transition implements Serializable {
     public char getSymbol() {
         return symbol;
     }
-
     public Node getNextNode() {
         return nextNode;
     }
