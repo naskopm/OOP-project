@@ -15,7 +15,7 @@ public class SumAutomatasCommand implements Command{
     public String getDescription(){
         return "Намира обединението на два автомата";
     }
-    private void unionAutomatas(Automata first, Automata second){
+    private static void unionAutomatas(Automata first, Automata second){
         Automata firstCopy = new Automata(true);
         Automata secondCopy = new Automata(true);
         firstCopy = first.clone();

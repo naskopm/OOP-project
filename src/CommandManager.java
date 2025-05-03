@@ -29,7 +29,11 @@ public class CommandManager {
         commands.put(11, new ConcatenateAutomatasCommand());
         commands.put(12, new SumAutomatasCommand());
         commands.put(13, new findLoops());
-        commands.put(14, new ExitCommand());
+        commands.put(14, new isTheAlphabetEmpty());
+        commands.put(15, new CheckInfiniteLanguage());
+        commands.put(16, new MakeDeterministic());
+        commands.put(17, new CreateAutomataFromRegexCommand());
+        commands.put(18, new ExitCommand());
     }
 
     public void displayMenu() {
@@ -55,7 +59,7 @@ public class CommandManager {
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
             
-            if (choice == 14) { // Exit command
+            if (choice == 18) { // Exit command
                 break;
             }
             

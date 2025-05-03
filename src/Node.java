@@ -38,7 +38,7 @@ public class Node implements Serializable {
         System.out.println("Добавен възел с id: "+this.getId());
             String input;
             System.out.println("Въведете броя на транзициите");
-            input = scanner.nextLine();
+            input = scanner.nextLine().trim();
             int numberOfTransitions = Integer.parseInt(input);
             for(int i = 0; i < numberOfTransitions; i++) {
                 System.out.println("Въведете символа на транзицията");
@@ -52,16 +52,22 @@ public class Node implements Serializable {
             }
         Node updateTransitions = parentAutomata.searchNode(previousNodeId);
         Boolean doesTransitionExists= false;
-        if (updateTransitions.getTransitions() != null)
+        if (updateTransitions != null)
         {
-            for(Transition transition: updateTransitions.getTransitions()){
-                if (transition.getPreviousNode().equals(this)){
-                    doesTransitionExists = true;
+            if (updateTransitions.getTransitions() != null)
+            {
+                for(Transition transition: updateTransitions.getTransitions()){
+                    if (transition.getPreviousNode().equals(this)){
+                        doesTransitionExists = true;
+                    }
                 }
             }
         }
+
         if (!doesTransitionExists){
-            updateTransitions.addTransition('e',this);
+            if (updateTransitions != this) {
+                updateTransitions.addTransition('e',this);
+            }
             //parentAutomata.getNodes().add(this);
             //System.out.println("Добавен възел с id: "+this.getId());
         }
@@ -217,8 +223,11 @@ public class Node implements Serializable {
             return;
         }
         visited.add(this.id);
-
         for (int i = 0; i < transitions.size(); i++) {
+            if (transitions.get(i).getSymbol() == 'e' && transitions.size() > 1){
+                Automata.setDeterministic(false);
+                return;
+            }
             for (int j = 0; j < transitions.size(); j++) {
                 if (i != j) {
                     if(transitions.get(i).getSymbol() == transitions.get(j).getSymbol()) {

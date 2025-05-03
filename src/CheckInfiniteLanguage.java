@@ -1,11 +1,10 @@
+import java.sql.SQLOutput;
 import java.util.*;
 
-public class findLoops implements Command{
-    int automataNumbers;
-    Automata editted;
+public class CheckInfiniteLanguage implements Command{
+    Boolean isTheLanguageFinite = true;
     @Override
     public void execute(){
-        automataNumbers  = Automata.getAutomataList().size();
         System.out.println("Въведете ID на автомата на който искате да намерите цикли");
         Scanner scanner = new Scanner(System.in);
         int a = Integer.parseInt(scanner.nextLine());
@@ -13,11 +12,9 @@ public class findLoops implements Command{
     }
     @Override
     public String getDescription(){
-        return "Намира циклични повторения на автомат";
+        return "Проверява дали автомата има крайна или безкрайна азбука";
     }
     void removeLeavesRecurssion(Automata nodesContainer, Node currentNode,Set<Integer> visited) {
-        if (currentNode == null)
-            return;
         if (visited.contains(currentNode.getId())) {
             if (currentNode.getTransitions().isEmpty()) {
                 Node.removeNode(currentNode, nodesContainer);
@@ -31,14 +28,15 @@ public class findLoops implements Command{
                 removeLeavesRecurssion(nodesContainer,transition.getNextNode(),visited);
             }
         }
-        if (currentNode.getTransitions().isEmpty()) {
-            Node.removeNode(currentNode, nodesContainer);
+        if (currentNode.getTransitions().isEmpty()){
+            Node.removeNode(currentNode,nodesContainer);
         }
 
     }
     public void findingLoopsRecursion(Node currentNode,Set<Integer> visited,Automata originalAutomata) {
         if (visited.contains(currentNode.getId())) {
             Automata createdAutomata = new Automata(true);
+            createdAutomata.makeAnID();
             int searchedID = currentNode.getId();
             ArrayList<Integer> ids = new ArrayList<>(visited);
             for (int i = 0; i < currentNode.getTransitions().size(); i++) {
@@ -53,12 +51,11 @@ public class findLoops implements Command{
                     }
                     for (int j = searchedId; j <visited.size() ; j++) {
                         if (!createdAutomata.getNodes().contains(originalAutomata.searchNode(ids.get(j))))
-                             createdAutomata.addNode(originalAutomata.searchNode(ids.get(j)));
+                            createdAutomata.addNode(originalAutomata.searchNode(ids.get(j)));
                     }
                 }
             }
-                editted = createdAutomata;
-
+            isTheLanguageFinite = false;
             return;
         }
         visited.add(currentNode.getId());
@@ -72,17 +69,18 @@ public class findLoops implements Command{
     private void findingLoops(Automata automata)
     {
         Automata copy = automata.clone();
-            Node initialNode = copy.findInitialNode();
-            if (initialNode != null) {
-
-                LinkedHashSet<Integer> visitedSecondRecurssion = new LinkedHashSet<>();
-                LinkedHashSet<Integer> visitedFirstRecurssion = new LinkedHashSet<>();
-                Automata.setDeterministic(true); // Reset determinism flag
-                findingLoopsRecursion(initialNode,visitedFirstRecurssion,copy);
-                removeLeavesRecurssion(editted, editted.findInitialNode(),visitedSecondRecurssion);
-                editted.makeAnID();
-                Automata.automataList.add(editted);
+        Node initialNode = copy.findInitialNode();
+        if (initialNode != null) {
+            LinkedHashSet<Integer> visitedFirstRecurssion = new LinkedHashSet<>();
+            findingLoopsRecursion(initialNode,visitedFirstRecurssion,copy);
+            if(isTheLanguageFinite)
+            {
+                System.out.println("Езика на автомата е краен");
             }
+            else {
+                System.out.println("Езика на автомата е безкраен");
+            }
+        }
     }
 
 }

@@ -62,10 +62,10 @@ public class Automata implements Serializable, Cloneable {
     private void AddNewTransition(Automata parentAutomata) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Въведете към кой възел искате да добавите транзиция");
-        int id = Integer.parseInt(scanner.nextLine());
+        int id = Integer.parseInt(scanner.nextLine().trim());
         Node toBeEditted = parentAutomata.searchNode(id);
         System.out.println("Към кой възел искате да сочи новата транзиция");
-        id = Integer.parseInt(scanner.nextLine());
+        id = Integer.parseInt(scanner.nextLine().trim());
         Node transitioned = parentAutomata.searchNode(id);
         System.out.println("С каква буква да бъде транзицията");
         String converter = scanner.nextLine();
