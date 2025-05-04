@@ -218,25 +218,25 @@ public class Node implements Serializable {
         return foundLetter;
     }
 
-    public void recurssionForDeterminism(Set<Integer> visited) {
+    public void recurssionForDeterminism(Set<Integer> visited, Automata automata) {
         if (visited.contains(this.id)) {
             return;
         }
         visited.add(this.id);
         for (int i = 0; i < transitions.size(); i++) {
             if (transitions.get(i).getSymbol() == 'e' && transitions.size() > 1){
-                Automata.setDeterministic(false);
+                automata.setDeterministic(false);
                 return;
             }
             for (int j = 0; j < transitions.size(); j++) {
                 if (i != j) {
                     if(transitions.get(i).getSymbol() == transitions.get(j).getSymbol()) {
-                        Automata.setDeterministic(false);
+                        automata.setDeterministic(false);
                         return;
                     }
                 }
             }
-            transitions.get(i).getNextNode().recurssionForDeterminism(visited);
+            transitions.get(i).getNextNode().recurssionForDeterminism(visited,automata);
         }
     }
 

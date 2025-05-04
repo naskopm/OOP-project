@@ -13,9 +13,9 @@ public class CheckDeterministicCommand implements Command {
         if (automata != null) {
             Node initialNode = automata.findInitialNode();
             if (initialNode != null) {
-                Automata.setDeterministic(true); // Reset determinism flag
-                initialNode.recurssionForDeterminism(new HashSet<>());
-                System.out.println("Автоматът " + (Automata.isDeterministic() ? "е" : "не е") + " детерминиран");
+                automata.setDeterministic(true); // Reset determinism flag
+                initialNode.recurssionForDeterminism(new HashSet<>(),automata);
+                System.out.println("Автоматът " + (automata.isDeterministic() ? "е" : "не е") + " детерминиран");
             } else {
                 System.out.println("Не е намерено начално състояние!");
             }

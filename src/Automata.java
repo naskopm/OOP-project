@@ -39,12 +39,12 @@ public class Automata implements Serializable, Cloneable {
         this.maxNodeID = maxNodeID;
     }
 
-    public static boolean isDeterministic() {
+    public  boolean isDeterministic() {
         return isDeterministic;
     }
 
-    public static void setDeterministic(boolean isDeterministic) {
-        Automata.isDeterministic = isDeterministic;
+    public void setDeterministic(boolean isDeterministic) {
+        this.isDeterministic = isDeterministic;
     }
 
     public int getId() {
@@ -152,7 +152,15 @@ public class Automata implements Serializable, Cloneable {
             throw new AssertionError(e);
         }
     }
-
+    public ArrayList<Transition> getAllTransitions(){
+        ArrayList<Transition> allTransitions = new ArrayList<Transition>();
+        for (Node node : this.getNodes()) {
+            for (Transition transition : node.getTransitions()) {
+                allTransitions.add(transition);
+            }
+        }
+        return allTransitions;
+    }
     public static Automata searchAutomata(int id) {
         for (Automata automata : automataList) {
             if (automata.getId() == id) {

@@ -77,7 +77,7 @@ public class findLoops implements Command{
 
                 LinkedHashSet<Integer> visitedSecondRecurssion = new LinkedHashSet<>();
                 LinkedHashSet<Integer> visitedFirstRecurssion = new LinkedHashSet<>();
-                Automata.setDeterministic(true); // Reset determinism flag
+                automata.setDeterministic(true); // Reset determinism flag
                 findingLoopsRecursion(initialNode,visitedFirstRecurssion,copy);
                 removeLeavesRecurssion(editted, editted.findInitialNode(),visitedSecondRecurssion);
                 editted.makeAnID();
