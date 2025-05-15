@@ -1,5 +1,12 @@
+package com.automataproject.commands;
+
 import java.io.*;
 import java.util.List;
+
+import com.automataproject.model.Automata;
+import com.automataproject.services.AutomataUtils;
+
+import java.util.Scanner;
 
 public class ReadFromFileCommand implements Command {
     @Override

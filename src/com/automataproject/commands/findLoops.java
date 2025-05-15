@@ -1,4 +1,16 @@
-import java.util.*;
+package com.automataproject.commands;
+
+import com.automataproject.model.Automata;
+import com.automataproject.model.Node;
+import com.automataproject.model.Transition;
+import com.automataproject.services.AutomataUtils;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
 
 public class findLoops implements Command{
     int automataNumbers;

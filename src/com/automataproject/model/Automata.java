@@ -1,3 +1,5 @@
+package com.automataproject.model;
+
 import javax.imageio.plugins.tiff.TIFFImageReadParam;
 import java.io.*;
 import java.lang.reflect.Array;

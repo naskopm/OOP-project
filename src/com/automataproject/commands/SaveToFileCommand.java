@@ -1,4 +1,10 @@
+package com.automataproject.commands;
+
+import com.automataproject.model.Automata;
+import com.automataproject.services.AutomataUtils;
+
 import java.io.*;
+import java.util.Scanner;
 
 public class SaveToFileCommand implements Command {
     @Override

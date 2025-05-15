@@ -1,3 +1,5 @@
+package com.automataproject.model;
+
 import java.io.Serializable;
 
 public class Transition implements Serializable {

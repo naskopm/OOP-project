@@ -1,3 +1,10 @@
+package com.automataproject.commands;
+
+import com.automataproject.model.Automata;
+import com.automataproject.model.Node;
+import com.automataproject.model.Transition;
+// No AutomataUtils needed based on current code, but good to be aware if it changes
+
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 import java.util.HashSet;

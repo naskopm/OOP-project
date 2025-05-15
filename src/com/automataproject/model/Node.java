@@ -1,3 +1,5 @@
+package com.automataproject.model;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,7 +177,7 @@ public class Node implements Serializable {
     public void removeTransition(Transition transition) {
         this.transitions.remove(transition);
     }
-    static void removeNode(Node target, Automata c) {
+    public static void removeNode(Node target, Automata c) {
         // 1) Remove incoming edges to target
         for (Node n : c.getNodes()) {
             if (n == null) continue;

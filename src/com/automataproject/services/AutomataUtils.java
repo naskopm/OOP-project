@@ -1,3 +1,8 @@
+package com.automataproject.services;
+
+import com.automataproject.model.Automata;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class AutomataUtils {

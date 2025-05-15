@@ -1,3 +1,10 @@
+package com.automataproject.commands;
+
+import com.automataproject.model.Automata;
+import com.automataproject.model.Node;
+import com.automataproject.model.Transition;
+import com.automataproject.services.AutomataUtils;
+
 import java.util.Scanner;
 import java.util.HashSet;
 
