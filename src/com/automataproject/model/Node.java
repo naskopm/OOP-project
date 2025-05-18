@@ -14,7 +14,14 @@ public class Node implements Serializable {
     private ArrayList<Transition> transitions;
     private Node previousNode;
     private final Automata parentAutomata;
-
+    public static Node findNode(Automata automata, int id){
+        for (Node node : automata.getNodes()) {
+            if (node.getId() == id) {
+                return node;
+            }
+        }
+        return null;
+    }
     public Node(Automata parentAutomata) {
         java.util.Scanner scanner = new java.util.Scanner(System.in);
         this.parentAutomata = parentAutomata;
