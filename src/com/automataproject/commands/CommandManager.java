@@ -6,16 +6,31 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.HashSet;
 
+/**
+ * Manages and executes commands in the automata system.
+ * Maintains a mapping of command IDs to their implementations and handles user input.
+ *
+ * @author Automata Project Team
+ * @version 1.0
+ */
 public class CommandManager {
     private final Map<Integer, Command> commands;
     private final Scanner scanner;
 
+    /**
+     * Constructs a new CommandManager instance.
+     * Initializes the command map and scanner, then sets up all available commands.
+     */
     public CommandManager() {
         this.commands = new HashMap<>();
         this.scanner = new Scanner(System.in);
         initializeCommands();
     }
 
+    /**
+     * Initializes all available commands and adds them to the command map.
+     * Each command is assigned a unique integer ID.
+     */
     private void initializeCommands() {
         // Add all commands to the map
         commands.put(1, new CreateAutomataCommand());
@@ -38,6 +53,10 @@ public class CommandManager {
         commands.put(18, new ExitCommand());
     }
 
+    /**
+     * Displays the main menu of available commands.
+     * Shows each command's ID and description.
+     */
     public void displayMenu() {
         System.out.println("\nМеню:");
         commands.forEach((key, command) -> 
@@ -45,6 +64,10 @@ public class CommandManager {
         );
     }
 
+    /**
+     * Executes a command based on user input.
+     * Prompts the user to select a command by ID and executes it.
+     */
     public void executeCommand(int choice) {
         Command command = commands.get(choice);
         if (command != null) {

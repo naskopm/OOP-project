@@ -7,7 +7,19 @@ import com.automataproject.services.AutomataUtils;
 
 import java.util.Scanner;
 
+/**
+ * Command for checking transition information in an automaton.
+ * This command displays all transitions for a selected node in the automaton.
+ *
+ * @author Automata Project Team
+ * @version 1.0
+ */
 public class CheckTransitionInfoCommand implements Command {
+    /**
+     * Executes the command by displaying transition information.
+     * Prompts the user to select an automaton and node, then shows all transitions
+     * from that node.
+     */
     @Override
     public void execute() {
         Scanner scanner = new Scanner(System.in);
@@ -41,6 +53,11 @@ public class CheckTransitionInfoCommand implements Command {
         }
     }
 
+    /**
+     * Gets the description of this command.
+     *
+     * @return A string describing the command's purpose
+     */
     @Override
     public String getDescription() {
         return "Търсене на преход в даден автомат";

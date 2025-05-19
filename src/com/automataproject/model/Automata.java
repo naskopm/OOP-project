@@ -6,6 +6,14 @@ import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+/**
+ * Represents a finite automaton with nodes and transitions.
+ * This class implements Serializable and Cloneable interfaces to support
+ * persistence and cloning of automata.
+ *
+ * @author Automata Project Team
+ * @version 1.0
+ */
 public class Automata implements Serializable, Cloneable {
     private static final long serialVersionUID =  -8172004642272343082L;
     private int id;
@@ -16,51 +24,112 @@ public class Automata implements Serializable, Cloneable {
     private static int maxID = 0;
     private static boolean isDeterministic = true;
 
-    // Getters and Setters
+    /**
+     * Gets the list of nodes in this automaton.
+     *
+     * @return ArrayList of nodes in the automaton
+     */
     public ArrayList<Node> getNodes() {
         return nodes;
     }
 
+    /**
+     * Adds a new node to the automaton.
+     *
+     * @param node The node to be added
+     */
     public void addNode(Node node) {
         this.nodes.add(node);
     }
 
+    /**
+     * Gets the alphabet used by the automaton.
+     *
+     * @return Array of characters representing the alphabet
+     */
     public static Character[] getAlphabet() {
         return alphabet;
     }
 
+    /**
+     * Gets the list of all automata in the system.
+     *
+     * @return List of all automata
+     */
     public static List<Automata> getAutomataList() {
         return automataList;
     }
 
+    /**
+     * Gets the maximum node ID in this automaton.
+     *
+     * @return The maximum node ID
+     */
     public int getMaxNodeID() {
         return maxNodeID;
     }
 
+    /**
+     * Sets the maximum node ID for this automaton.
+     *
+     * @param maxNodeID The new maximum node ID
+     */
     public void setMaxNodeID(int maxNodeID) {
         this.maxNodeID = maxNodeID;
     }
 
-    public  boolean isDeterministic() {
+    /**
+     * Checks if this automaton is deterministic.
+     *
+     * @return true if the automaton is deterministic, false otherwise
+     */
+    public boolean isDeterministic() {
         return isDeterministic;
     }
 
+    /**
+     * Sets whether this automaton is deterministic.
+     *
+     * @param isDeterministic The new deterministic state
+     */
     public void setDeterministic(boolean isDeterministic) {
         this.isDeterministic = isDeterministic;
     }
 
+    /**
+     * Gets the ID of this automaton.
+     *
+     * @return The automaton's ID
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Sets the ID of this automaton.
+     *
+     * @param id The new ID
+     */
     public void setId(int id) {
         this.id = id;
     }
 
-    // Constructor
+    /**
+     * Constructs a new Automata instance.
+     * Initializes an empty list of nodes.
+     *
+     * @param bypass A flag to bypass certain initialization steps
+     */
     public Automata(boolean bypass) {
         this.nodes = new ArrayList<>();
     }
+
+    /**
+     * Adds a new transition to a node in the automaton.
+     * Prompts the user for transition details including target node and symbol.
+     *
+     * @param parentAutomata The automaton containing the nodes
+     */
     private void AddNewTransition(Automata parentAutomata) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Въведете към кой възел искате да добавите транзиция");
@@ -73,8 +142,13 @@ public class Automata implements Serializable, Cloneable {
         String converter = scanner.nextLine();
         char symbol = converter.trim().charAt(0);
         toBeEditted.addTransition(symbol,transitioned);
-
     }
+
+    /**
+     * Default constructor for Automata.
+     * Creates a new automaton and prompts the user to add nodes and transitions.
+     * The automaton is automatically added to the global automata list.
+     */
     public Automata() {
         this.nodes = new ArrayList<>();
         this.makeAnID();
@@ -102,7 +176,11 @@ public class Automata implements Serializable, Cloneable {
         Automata.automataList.add(this);
     }
 
-    // Node management methods
+    /**
+     * Finds the initial node in this automaton.
+     *
+     * @return The initial node, or null if no initial node exists
+     */
     public Node findInitialNode() {
         for (Node node : nodes) {
             if (node.isInitial()) {
@@ -112,8 +190,10 @@ public class Automata implements Serializable, Cloneable {
         return null;
     }
 
-
-
+    /**
+     * Generates a unique ID for this automaton.
+     * The ID is based on the maximum existing ID in the automata list.
+     */
     public void makeAnID() {
         for (Automata automata : automataList) {
             if (maxID < automata.getId()) {
@@ -124,6 +204,13 @@ public class Automata implements Serializable, Cloneable {
         this.setId(maxID);
     }
 
+    /**
+     * Creates a deep copy of this automaton.
+     * Clones all nodes and transitions while maintaining their relationships.
+     *
+     * @return A new Automata instance that is a deep copy of this automaton
+     * @throws AssertionError if cloning is not supported
+     */
     @Override
     public Automata clone() {
         try {
@@ -154,7 +241,13 @@ public class Automata implements Serializable, Cloneable {
             throw new AssertionError(e);
         }
     }
-    public ArrayList<Transition> getAllTransitions(){
+
+    /**
+     * Gets all transitions in this automaton.
+     *
+     * @return ArrayList containing all transitions from all nodes
+     */
+    public ArrayList<Transition> getAllTransitions() {
         ArrayList<Transition> allTransitions = new ArrayList<Transition>();
         for (Node node : this.getNodes()) {
             for (Transition transition : node.getTransitions()) {
@@ -163,6 +256,13 @@ public class Automata implements Serializable, Cloneable {
         }
         return allTransitions;
     }
+
+    /**
+     * Searches for an automaton in the global automata list by ID.
+     *
+     * @param id The ID of the automaton to find
+     * @return The found automaton, or null if no automaton with the given ID exists
+     */
     public static Automata searchAutomata(int id) {
         for (Automata automata : automataList) {
             if (automata.getId() == id) {
@@ -171,7 +271,14 @@ public class Automata implements Serializable, Cloneable {
         }
         return null;
     }
-    public Node searchNode(int id){
+
+    /**
+     * Searches for a node in this automaton by ID.
+     *
+     * @param id The ID of the node to find
+     * @return The found node, or null if no node with the given ID exists
+     */
+    public Node searchNode(int id) {
         for (int i = 0; i < this.nodes.size(); i++) {
             if (this.nodes.get(i).getId() == id)
             {
