@@ -4,8 +4,7 @@ import com.automataproject.model.Automata;
 import com.automataproject.model.Node;
 import com.automataproject.model.Transition;
 import com.automataproject.services.AutomataUtils;
-
-import java.util.Scanner;
+import java.util.ArrayList;
 
 /**
  * Command for checking transition information in an automaton.
@@ -21,17 +20,20 @@ public class CheckTransitionInfoCommand implements Command {
      * from that node.
      */
     @Override
-    public void execute() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Въведете ID на търсения автомат");
-        int automataID = Integer.parseInt(scanner.nextLine());
+    public void execute(ArrayList<String> arguments) {
+        if (arguments.size() < 2) {
+            System.out.println("Please provide automaton ID and node ID as arguments");
+            return;
+        }
+        
+        int automataID = Integer.parseInt(arguments.get(0));
+        int nodeID = Integer.parseInt(arguments.get(1));
+        
         Automata found = AutomataUtils.searchAutomata(automataID);
         if (found != null) {
-            System.out.println("Въведете id на състоянието, което искате да изследвате");
-            int nodeID = Integer.parseInt(scanner.nextLine());
             checkInfoForTransition(found, nodeID);
         } else {
-            System.out.println("Не е намерен автомат с ID: " + automataID);
+            System.out.println("Automaton not found with ID: " + automataID);
         }
     }
 
@@ -49,7 +51,7 @@ public class CheckTransitionInfoCommand implements Command {
                 System.out.println();
             }
         } else {
-            System.out.println("Не е намерен възел с ID: " + id);
+            System.out.println("Node not found with ID: " + id);
         }
     }
 
@@ -60,6 +62,6 @@ public class CheckTransitionInfoCommand implements Command {
      */
     @Override
     public String getDescription() {
-        return "Търсене на преход в даден автомат";
+        return "Search for transitions in a given automaton";
     }
 } 

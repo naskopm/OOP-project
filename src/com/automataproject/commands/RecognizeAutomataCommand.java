@@ -12,24 +12,25 @@ import java.util.Stack;
 
 public class RecognizeAutomataCommand implements Command {
     @Override
-    public void execute() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Въведете ID на автомата: ");
-        int id = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        System.out.print("Въведете дума за разпознаване: ");
-        String word = scanner.nextLine();
+    public void execute(ArrayList<String> arguments) {
+        if (arguments.size() < 2) {
+            System.out.println("Please provide automaton ID and word as arguments");
+            return;
+        }
+        
+        int id = Integer.parseInt(arguments.get(0));
+        String word = arguments.get(1);
         recognizeAutomata(word, id);
     }
 
     private void recognizeAutomata(String word, int id) {
-        Automata currentAutomata = AutomataUtils.searchAutomata(id);
-        if (currentAutomata == null) {
-            System.out.println("Не е намерен автомат с ID: " + id);
+        Automata automata = AutomataUtils.searchAutomata(id);
+        if (automata == null) {
+            System.out.println("Automaton not found!");
             return;
         }
 
-        Node initialNode = currentAutomata.findInitialNode();
+        Node initialNode = automata.findInitialNode();
         if (initialNode == null) {
             System.out.println("Не е намерено начално състояние!");
             return;
@@ -78,6 +79,6 @@ public class RecognizeAutomataCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Разпознаване на дума от автомат";
+        return "Recognize a word using a specific automaton";
     }
 } 

@@ -1,22 +1,22 @@
 package com.automataproject.commands;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.List;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Manages and executes commands in the automata system.
  * Maintains a mapping of command IDs to their implementations and handles user input.
  *
- * @author Automata Project Team
+ * @author Atanas Petrov Margaritov
  * @version 1.0
  */
 public class CommandManager {
-    private final Map<Integer, Command> commands;
+    private final Map<String, Command> commands;
     private final Scanner scanner;
-
+     public static CommandManager commandManager;
+     static ArrayList<String> commandKeys = new ArrayList<String>();
+     public Map<String, Command> getCommands(){
+         return this.commands;
+     }
     /**
      * Constructs a new CommandManager instance.
      * Initializes the command map and scanner, then sets up all available commands.
@@ -25,6 +25,7 @@ public class CommandManager {
         this.commands = new HashMap<>();
         this.scanner = new Scanner(System.in);
         initializeCommands();
+
     }
 
     /**
@@ -33,45 +34,46 @@ public class CommandManager {
      */
     private void initializeCommands() {
         // Add all commands to the map
-        commands.put(1, new CreateAutomataCommand());
-        commands.put(2, new CheckTransitionInfoCommand());
-        commands.put(3, new SaveToFileCommand());
-        commands.put(4, new ReadFromFileCommand());
-        commands.put(5, new CheckEmptyLanguageCommand());
-        commands.put(6, new PrintAllAutomatasCommand());
-        commands.put(7, new DisplayAutomataCommand());
-        commands.put(8, new CheckDeterministicCommand());
-        commands.put(9, new RecognizeAutomataCommand());
-        commands.put(10, new CreateAutomataFromRegexCommand());
-        commands.put(11, new ConcatenateAutomatasCommand());
-        commands.put(12, new SumAutomatasCommand());
-        commands.put(13, new findLoops());
-        commands.put(14, new isTheAlphabetEmpty());
-        commands.put(15, new CheckInfiniteLanguage());
-        commands.put(16, new MakeDeterministic());
-        commands.put(17, new CreateAutomataFromRegexCommand());
-        commands.put(18, new ExitCommand());
+        commands.put("Create automata", new CreateAutomataCommand());
+        commands.put("Check transition", new CheckTransitionInfoCommand());
+        commands.put("Close", new Close());
+        commands.put("Save", new SaveToFileCommand());
+        commands.put("Read from file", new ReadFromFileCommand());
+        commands.put("Check empty language", new CheckEmptyLanguageCommand());
+        commands.put("Print all automatas", new PrintAllAutomatasCommand());
+        commands.put("Display automata", new DisplayAutomataCommand());
+        commands.put("Check Deterministic", new CheckDeterministicCommand());
+        commands.put("Recognise a word", new RecognizeAutomataCommand());
+        commands.put("Concatenate automatas", new ConcatenateAutomatasCommand());
+        commands.put("Sum Automatas", new SumAutomatasCommand());
+        commands.put("Find loops", new findLoops());
+        commands.put("Find empty alphabet", new isTheAlphabetEmpty());
+        commands.put("Check infinte language", new CheckInfiniteLanguage());
+        commands.put("Make automata deteministic", new MakeDeterministic());
+        commands.put("Create from regex", new CreateAutomataFromRegexCommand());
+        commands.put("SaveAs", new SaveAs());
+        commands.put("Open", new Open());
+        commands.put("help", new Help());
+        commands.put("exit", new ExitCommand());
+        commandManager = this;
+        String[] holder = commands.keySet().toArray(new String[0]);
+        commandKeys.addAll(Arrays.asList(holder));
     }
 
     /**
      * Displays the main menu of available commands.
      * Shows each command's ID and description.
      */
-    public void displayMenu() {
-        System.out.println("\nМеню:");
-        commands.forEach((key, command) -> 
-            System.out.println(key + ". " + command.getDescription())
-        );
-    }
+
 
     /**
      * Executes a command based on user input.
      * Prompts the user to select a command by ID and executes it.
      */
-    public void executeCommand(int choice) {
+    public void executeCommand(String choice, ArrayList<String> arguments) {
         Command command = commands.get(choice);
         if (command != null) {
-            command.execute();
+            command.execute(arguments);
         } else {
             System.out.println("Невалиден избор!");
         }
@@ -79,16 +81,30 @@ public class CommandManager {
 
     public void run() {
         while (true) {
-            displayMenu();
-            System.out.print("Изберете опция: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-            
-            if (choice == 18) { // Exit command
+            String choice = scanner.nextLine();
+
+            if (choice.equals("exit")) { // Exit command
                 break;
             }
-            
-            executeCommand(choice);
+            ArrayList<String> arguments = new ArrayList<String>();
+            String tokenizer [] = choice.split(" ");
+            StringBuilder sb = new StringBuilder();
+            Boolean isValidCommands = false;
+            String CommandToExecute = "";
+            int i= 0;
+            for(i= 0; i<tokenizer.length; i++){
+                sb.append(tokenizer[i]);
+                sb.append(" ");
+                if (commandKeys.contains(sb.toString().trim())){
+                    isValidCommands = true;
+                    CommandToExecute = sb.toString().trim();
+                    break;
+                }
+            }
+            for (int j = i+1; j< tokenizer.length; j++){
+                arguments.add(tokenizer[j].trim());
+            }
+            executeCommand(CommandToExecute, arguments);
         }
     }
 } 

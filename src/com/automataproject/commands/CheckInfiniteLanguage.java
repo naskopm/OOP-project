@@ -9,26 +9,33 @@ import java.util.*;
 
 public class CheckInfiniteLanguage implements Command{
     Boolean isTheLanguageFinite = true;
+    
     @Override
-    public void execute(){
-
-        System.out.println("Въведете ID на автомата на който искате да намерите цикли");
-        Scanner scanner = new Scanner(System.in);
-        int a = Integer.parseInt(scanner.nextLine());
-        LinkedHashSet<Integer> stack = new LinkedHashSet<>();
-        isTheLanguageFinite = true;
-        dfsExtract(Automata.searchAutomata(a).findInitialNode(),Automata.searchAutomata(a));
-        if(isTheLanguageFinite){
-            System.out.println("Автомата има краен език");
+    public void execute(ArrayList<String> arguments) {
+        if (arguments.size() < 1) {
+            System.out.println("Please provide an automaton ID as an argument");
+            return;
         }
-        else{
-            System.out.println("Автомата има безкраен език");
-
+        
+        int id = Integer.parseInt(arguments.get(0));
+        Automata automata = Automata.searchAutomata(id);
+        if (automata == null) {
+            System.out.println("Automaton not found with ID: " + id);
+            return;
+        }
+        
+        isTheLanguageFinite = true;
+        dfsExtract(automata.findInitialNode(), automata);
+        if (isTheLanguageFinite) {
+            System.out.println("The automaton has a finite language");
+        } else {
+            System.out.println("The automaton has an infinite language");
         }
     }
+
     @Override
     public String getDescription(){
-        return "Проверява дали автомата има крайна или безкрайна азбука";
+        return "Check if the automaton has a finite or infinite language";
     }
 
 

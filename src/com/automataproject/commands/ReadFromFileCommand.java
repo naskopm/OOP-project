@@ -2,17 +2,15 @@ package com.automataproject.commands;
 
 import java.io.*;
 import java.util.List;
-
+import java.util.ArrayList;
 import com.automataproject.model.Automata;
 import com.automataproject.services.AutomataUtils;
 
-import java.util.Scanner;
-
 public class ReadFromFileCommand implements Command {
     @Override
-    public void execute() {
+    public void execute(ArrayList<String> arguments) {
         readFromFile();
-        System.out.println("Автоматите бяха заредени успешно!");
+        System.out.println("Automatons were successfully loaded!");
     }
 
     private void readFromFile() {
@@ -32,6 +30,6 @@ public class ReadFromFileCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Зареждане на автоматите от файл";
+        return "Load automatons from file";
     }
 } 

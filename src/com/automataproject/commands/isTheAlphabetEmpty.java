@@ -13,27 +13,30 @@ import java.util.Stack;
 
 public class isTheAlphabetEmpty implements Command {
     @Override
-    public void execute() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Въведете ID на автомата: ");
-        int id = scanner.nextInt();
+    public void execute(ArrayList<String> arguments) {
+        if (arguments.size() < 1) {
+            System.out.println("Please provide an automaton ID as an argument");
+            return;
+        }
+        
+        int id = Integer.parseInt(arguments.get(0));
         checkForEmptyLanguage(id);
     }
 
     private void checkForEmptyLanguage(int id) {
         Automata currentAutomata = AutomataUtils.searchAutomata(id);
         if (currentAutomata == null) {
-            System.out.println("Не е намерен автомат с ID: " + id);
+            System.out.println("Automaton not found with ID: " + id);
             return;
         }
 
         Node initialNode = currentAutomata.findInitialNode();
         if (initialNode == null) {
-            System.out.println("Не е намерено начално състояние!");
+            System.out.println("No initial state found!");
             return;
         }
-        if (initialNode.getTransitions().isEmpty()){
-            System.out.println("Азбуката на автомата е празна");
+        if (initialNode.getTransitions().isEmpty()) {
+            System.out.println("The automaton's alphabet is empty");
             return;
         }
         // Use a stack to track current state and position in word
@@ -54,10 +57,10 @@ public class isTheAlphabetEmpty implements Command {
             }
         }
         System.out.println("Азбуката на автомата е празна");
-
     }
+
     @Override
     public String getDescription() {
-        return "Намира дали азбуката на един автомат е празна";
+        return "Check if the automaton's alphabet is empty";
     }
 }

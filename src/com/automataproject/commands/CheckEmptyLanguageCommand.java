@@ -3,8 +3,7 @@ package com.automataproject.commands;
 import com.automataproject.model.Automata;
 import com.automataproject.model.Node;
 import com.automataproject.services.AutomataUtils;
-
-import java.util.Scanner;
+import java.util.ArrayList;
 
 /**
  * Command for checking if an automaton's language is empty.
@@ -20,15 +19,18 @@ public class CheckEmptyLanguageCommand implements Command {
      * a path from an initial state to a final state.
      */
     @Override
-    public void execute() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Въведете id на автомата на който искате да проверите, дали езика е празен");
-        int input = Integer.parseInt(scanner.nextLine());
+    public void execute(ArrayList<String> arguments) {
+        if (arguments.size() < 1) {
+            System.out.println("Please provide an automaton ID as an argument");
+            return;
+        }
+        
+        int input = Integer.parseInt(arguments.get(0));
         Automata foundAutomata = AutomataUtils.searchAutomata(input);
         if (foundAutomata != null) {
             System.out.println(checkIfEmptyAlphabet(foundAutomata));
         } else {
-            System.out.println("Не е намерен автомат с ID: " + input);
+            System.out.println("Automaton not found with ID: " + input);
         }
     }
 
@@ -44,6 +46,6 @@ public class CheckEmptyLanguageCommand implements Command {
      */
     @Override
     public String getDescription() {
-        return "Проверка дали езикът на автомата е празен";
+        return "Check if an automaton's language is empty";
     }
 } 

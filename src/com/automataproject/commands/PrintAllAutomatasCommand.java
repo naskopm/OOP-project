@@ -2,10 +2,11 @@ package com.automataproject.commands;
 
 import com.automataproject.model.Automata;
 import com.automataproject.services.AutomataUtils;
+import java.util.ArrayList;
 
 public class PrintAllAutomatasCommand implements Command {
     @Override
-    public void execute() {
+    public void execute(ArrayList<String> arguments) {
         printAllAutomatas();
     }
 

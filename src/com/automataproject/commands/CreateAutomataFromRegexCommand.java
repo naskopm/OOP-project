@@ -11,17 +11,21 @@ import java.util.Stack;
 public class CreateAutomataFromRegexCommand implements Command {
     static ArrayList<Automata> automatas = new ArrayList<Automata>();
     @Override
-    public void execute() {
-        System.out.println("Напишете regex симовла по който искате да създадете автомата скоби не се подържат");
-        Scanner scanner = new Scanner(System.in);
-        String regex = scanner.nextLine();
-        createAutomata(tokenizeString(regex));
+    public void execute(ArrayList<String> arguments) {
+        if (arguments.size() == 0){
+            System.out.println("No regex found, please write it after the command");
+            return;
+        }
+        createAutomata(tokenizeString(arguments.get(0)));
     }
 
     @Override
     public String getDescription() {
         return "Създаване на автомат от регулярен израз";
     }
+    /*
+    * Splits the word into tokens that can be recognised by the program
+     */
     public static ArrayList<ArrayList<String>> tokenizeString(String query)
     {
         Boolean isRecognised = true;
@@ -48,6 +52,9 @@ public class CreateAutomataFromRegexCommand implements Command {
         }
         return tokenizers;
     }
+    /*
+     * Finds the union of two automatas
+     */
     private static Automata unionAutomatas(Automata first, Automata second){
         Automata firstCopy = new Automata(true);
         Automata secondCopy = new Automata(true);
@@ -64,6 +71,9 @@ public class CreateAutomataFromRegexCommand implements Command {
         }
         return firstCopy;
     }
+    /*
+     * Creates a new automata from the tokenized word
+     */
     public void createAutomata(ArrayList<ArrayList<String>> splitted){
         for(ArrayList<String> list: splitted){
             Automata automata = new Automata(true);

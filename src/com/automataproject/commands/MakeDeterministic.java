@@ -13,13 +13,21 @@ import java.util.Stack;
 
 public class MakeDeterministic implements Command{
     @Override
-    public void execute(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Въведете id на автомата, който искате да направите детерминиран");
-        int id = Integer.parseInt(scanner.nextLine());
+    public void execute(ArrayList<String> arguments) {
+        if (arguments.size() < 1) {
+            System.out.println("Please provide an automaton ID as an argument");
+            return;
+        }
+        
+        int id = Integer.parseInt(arguments.get(0));
         Automata toBeMadeDeterministic = Automata.searchAutomata(id);
+        if (toBeMadeDeterministic == null) {
+            System.out.println("Automaton not found with ID: " + id);
+            return;
+        }
+        
         HashSet<Node> visitedNodes = new HashSet<Node>();
-        recurssionHandleNode(toBeMadeDeterministic,visitedNodes);
+        recurssionHandleNode(toBeMadeDeterministic, visitedNodes);
     }
 
     private void recurssionHandleNode(Automata automata, HashSet<Node> visitedNodes) {
@@ -43,19 +51,14 @@ public class MakeDeterministic implements Command{
             for (Transition transition : currentNode.getTransitions()) {
                 if (visited.contains(transition.getSymbol()) && (repeatedChar == transition.getSymbol() || repeatedChar == '~')) {
                     repeatedChar = transition.getSymbol();
-
                 }
                 visited.add(transition.getSymbol());
             }
             if (repeatedChar != '~') {
-                for (Transition transition: currentNode.getTransitions()){
-                    for(Transition secondTransition: transition.getNextNode().getTransitions()) {
-                        if (transition.getSymbol() == repeatedChar){
-                            Transition add = new Transition(transition.getSymbol(), transition.getNextNode());
-                            combinedTransitions.add(add);
-                        }
+                for (Transition transition: currentNode.getTransitions()) {
+                    if (transition.getSymbol() == repeatedChar) {
+                        combinedTransitions.add(transition);
                     }
-
                 }
                 Node combined = new Node(automata, true);
                 combined.makeANodeID(automata);

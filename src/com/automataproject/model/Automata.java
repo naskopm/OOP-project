@@ -16,6 +16,7 @@ import java.util.*;
  */
 public class Automata implements Serializable, Cloneable {
     private static final long serialVersionUID =  -8172004642272343082L;
+    public static String currentFileEditted = "";
     private int id;
     private ArrayList<Node> nodes;
     private static Character alphabet [] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
@@ -23,6 +24,10 @@ public class Automata implements Serializable, Cloneable {
     public int maxNodeID = 0;
     private static int maxID = 0;
     private static boolean isDeterministic = true;
+
+    public static void setMaxID(int maxID) {
+        Automata.maxID = maxID;
+    }
 
     /**
      * Gets the list of nodes in this automaton.

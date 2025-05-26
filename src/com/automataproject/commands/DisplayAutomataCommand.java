@@ -3,7 +3,7 @@ package com.automataproject.commands;
 import com.automataproject.model.Automata;
 import com.automataproject.model.Node;
 import com.automataproject.model.Transition;
-import java.util.Scanner;
+import java.util.ArrayList;
 
 /**
  * Command for displaying detailed information about a specific automaton.
@@ -19,10 +19,13 @@ public class DisplayAutomataCommand implements Command {
      * including nodes, their properties, and all transitions.
      */
     @Override
-    public void execute() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter automaton ID:");
-        int automatonId = Integer.parseInt(scanner.nextLine());
+    public void execute(ArrayList<String> arguments) {
+        if (arguments.size() < 1) {
+            System.out.println("Please provide an automaton ID as an argument");
+            return;
+        }
+        
+        int automatonId = Integer.parseInt(arguments.get(0));
         Automata automata = Automata.searchAutomata(automatonId);
         
         if (automata == null) {
@@ -54,6 +57,6 @@ public class DisplayAutomataCommand implements Command {
      */
     @Override
     public String getDescription() {
-        return "Отпечатай автомат";
+        return "Display detailed information about a specific automaton";
     }
 } 

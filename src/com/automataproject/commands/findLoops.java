@@ -21,32 +21,34 @@ import java.util.*;
 public class findLoops implements Command {
 
     @Override
-    public void execute() {
+    public void execute(ArrayList<String> arguments) {
         if (Automata.getAutomataList().isEmpty()) {
-            System.out.println("Няма заредени автомати.");
+            System.out.println("No automatons loaded.");
             return;
         }
 
-        System.out.println("Въведете ID на автомата, на който искате да намерите цикли:");
-        Scanner scanner = new Scanner(System.in);
+        if (arguments.size() < 1) {
+            System.out.println("Please provide an automaton ID as an argument");
+            return;
+        }
 
         try {
-            int id = Integer.parseInt(scanner.nextLine());
+            int id = Integer.parseInt(arguments.get(0));
             Automata target = Automata.searchAutomata(id);
             if (target == null) {
-                System.out.println("Няма автомат с такова ID.");
+                System.out.println("No automaton found with that ID.");
                 return;
             }
 
             findLoops(target);
         } catch (NumberFormatException ex) {
-            System.out.println("Невалидно ID.");
+            System.out.println("Invalid ID.");
         }
     }
 
     @Override
     public String getDescription() {
-        return "Намира циклични повторения на автомат";
+        return "Find cyclic repetitions in an automaton";
     }
 
     // ---------------------------------------------------------------------
@@ -57,7 +59,7 @@ public class findLoops implements Command {
 
         Node start = original.findInitialNode();
         if (start == null) {
-            System.out.println("Автоматът няма начално състояние.");
+            System.out.println("The automaton has no initial state.");
             return;
         }
 
@@ -73,9 +75,9 @@ public class findLoops implements Command {
         }
 
         if (extractedLoops.isEmpty()) {
-            System.out.println("Цикли не бяха открити.");
+            System.out.println("No cycles were found.");
         } else {
-            System.out.printf("Открити и добавени са %d циклични автомата.%n", extractedLoops.size());
+            System.out.printf("Found and added %d cyclic automatons.%n", extractedLoops.size());
         }
     }
 

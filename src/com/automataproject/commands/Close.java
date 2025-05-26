@@ -1,19 +1,20 @@
 package com.automataproject.commands;
 
 import com.automataproject.model.Automata;
-import com.automataproject.services.AutomataUtils;
-import java.io.*;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class SaveToFileCommand implements Command {
+public class Close implements Command{
     @Override
     public void execute(ArrayList<String> arguments) {
         saveToFile();
-        System.out.println("Automatons were successfully saved!");
     }
-/*
-* Saves the file without closing it
- */
+    /*
+    * Closes the file and clears the list of automatas
+     */
     private void saveToFile() {
         if (Automata.currentFileEditted == ""){
             System.out.println("No file opened, the automatas weren't saved");
@@ -22,13 +23,17 @@ public class SaveToFileCommand implements Command {
         try (FileOutputStream fileOut = new FileOutputStream(Automata.currentFileEditted);
              ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
             out.writeObject(Automata.getAutomataList());
+            System.out.println("Automatons were successfully saved!");
+            Automata.automataList.clear();
+            Automata.setMaxID(0);
+            Automata.currentFileEditted = "";
+
         } catch (IOException i) {
             i.printStackTrace();
         }
     }
-
     @Override
     public String getDescription() {
-        return "Save automatons to file";
+        return "";
     }
-} 
+}
