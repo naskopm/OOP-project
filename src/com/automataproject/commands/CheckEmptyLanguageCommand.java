@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Command for checking if an automaton's language is empty.
  * This command verifies whether the automaton accepts any strings.
  *
- * @author Automata Project Team
+ * @author Atanas Petrov Margaritov
  * @version 1.0
  */
 public class CheckEmptyLanguageCommand implements Command {

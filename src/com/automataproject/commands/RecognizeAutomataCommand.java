@@ -10,7 +10,14 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Stack;
 
+/**
+ * Tries to recognise a word
+ */
+
 public class RecognizeAutomataCommand implements Command {
+    /**
+     * Checks if a word is recognised or not
+     */
     @Override
     public void execute(ArrayList<String> arguments) {
         if (arguments.size() < 2) {

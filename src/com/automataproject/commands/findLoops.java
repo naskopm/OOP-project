@@ -19,7 +19,9 @@ import java.util.*;
  * removes dead-end states (i.e. leaves) that are not part of any further loop.
  */
 public class findLoops implements Command {
-
+    /**
+     *Finds loops within an automata and saves each loop into a new automata
+     */
     @Override
     public void execute(ArrayList<String> arguments) {
         if (Automata.getAutomataList().isEmpty()) {

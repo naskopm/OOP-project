@@ -6,7 +6,13 @@ import com.automataproject.services.AutomataUtils;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * Checks if an automata is deterministic
+ */
 public class CheckDeterministicCommand implements Command {
+    /**
+     * Checks if an automata is deterministic or not, you need to supply an ID
+     */
     @Override
     public void execute(ArrayList<String> arguments) {
         if (arguments.size() < 1) {

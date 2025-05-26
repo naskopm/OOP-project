@@ -4,8 +4,14 @@ import com.automataproject.model.Automata;
 import com.automataproject.model.Node;
 import com.automataproject.services.AutomataUtils;
 import java.util.ArrayList;
+/**
+ * Concatenates two automatas
+ */
 
 public class ConcatenateAutomatasCommand implements Command {
+    /**
+     * Finds the concatenation of two automatas and saves it into a new automata
+     */
     @Override
     public void execute(ArrayList<String> arguments) {
         if (arguments.size() < 2) {

@@ -38,7 +38,6 @@ public class CommandManager {
         commands.put("Check transition", new CheckTransitionInfoCommand());
         commands.put("Close", new Close());
         commands.put("Save", new SaveToFileCommand());
-        commands.put("Read from file", new ReadFromFileCommand());
         commands.put("Check empty language", new CheckEmptyLanguageCommand());
         commands.put("Print all automatas", new PrintAllAutomatasCommand());
         commands.put("Display automata", new DisplayAutomataCommand());

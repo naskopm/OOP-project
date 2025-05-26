@@ -5,7 +5,14 @@ import com.automataproject.model.Node;
 import com.automataproject.services.AutomataUtils;
 import java.util.ArrayList;
 
+/**
+ * Sums two automatas
+ */
+
 public class SumAutomatasCommand implements Command {
+    /**
+     * Finds the union of two automatas
+     */
     @Override
     public void execute(ArrayList<String> arguments) {
         if (arguments.size() < 2) {

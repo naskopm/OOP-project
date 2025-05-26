@@ -8,8 +8,14 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Stack;
 
+/**
+ * Creates an equivelent automata from a regex
+ */
 public class CreateAutomataFromRegexCommand implements Command {
     static ArrayList<Automata> automatas = new ArrayList<Automata>();
+    /**
+     * Creates an equivelent automata from a regex
+     */
     @Override
     public void execute(ArrayList<String> arguments) {
         if (arguments.size() == 0){
@@ -23,7 +29,7 @@ public class CreateAutomataFromRegexCommand implements Command {
     public String getDescription() {
         return "Създаване на автомат от регулярен израз";
     }
-    /*
+    /**
     * Splits the word into tokens that can be recognised by the program
      */
     public static ArrayList<ArrayList<String>> tokenizeString(String query)
@@ -52,7 +58,7 @@ public class CreateAutomataFromRegexCommand implements Command {
         }
         return tokenizers;
     }
-    /*
+    /**
      * Finds the union of two automatas
      */
     private static Automata unionAutomatas(Automata first, Automata second){
@@ -71,7 +77,7 @@ public class CreateAutomataFromRegexCommand implements Command {
         }
         return firstCopy;
     }
-    /*
+    /**
      * Creates a new automata from the tokenized word
      */
     public void createAutomata(ArrayList<ArrayList<String>> splitted){

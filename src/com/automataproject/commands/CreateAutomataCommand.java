@@ -4,11 +4,14 @@ import com.automataproject.model.Automata;
 import com.automataproject.services.AutomataUtils;
 import java.util.ArrayList;
 
+/**
+ * Creates an Automata with an interactive menu
+ */
 public class CreateAutomataCommand implements Command {
-    @Override
-    /*
-    * Creates an Automata with an interactive menu
+    /**
+     * Creates an Automata with an interactive menu
      */
+    @Override
     public void execute(ArrayList<String> arguments) {
         new Automata();
     }

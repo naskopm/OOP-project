@@ -8,8 +8,12 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+/**
+ * Save the automatas somewhere in your computer
+ */
+
 public class SaveAs implements Command{
-/*
+/**
  * Saves the automates in a file, with a path provided by the user
  */
     @Override

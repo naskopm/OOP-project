@@ -7,9 +7,14 @@ import com.automataproject.model.Transition;
 
 import java.util.*;
 
+/**
+ * The command checks if an automata has infinite language
+ */
 public class CheckInfiniteLanguage implements Command{
     Boolean isTheLanguageFinite = true;
-    
+    /**
+     * Cheks if an automata has an empty language
+     */
     @Override
     public void execute(ArrayList<String> arguments) {
         if (arguments.size() < 1) {

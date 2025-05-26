@@ -10,8 +10,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Stack;
-
+/**
+ * Takes an automata and makes it deterministic
+ */
 public class MakeDeterministic implements Command{
+    /**
+     * Takes an automata and makes it deterministic
+     */
     @Override
     public void execute(ArrayList<String> arguments) {
         if (arguments.size() < 1) {

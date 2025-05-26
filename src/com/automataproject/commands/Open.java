@@ -7,9 +7,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-
+/**
+ * Opens a file, you have to provide a path to a file
+ */
 public class Open implements Command{
-
+    /**
+     * Opens a file, you have to provide a path to a file
+     */
     @Override
     public void execute(ArrayList<String> arguments) {
         try (FileInputStream fileIn = new FileInputStream(arguments.get(0));

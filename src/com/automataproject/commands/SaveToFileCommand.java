@@ -5,15 +5,20 @@ import com.automataproject.services.AutomataUtils;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * Saves the automatas in the opened file, if there is no opened file, it returns a message.
+ */
+
 public class SaveToFileCommand implements Command {
+    /**
+     * Saves the file without closing it
+     */
     @Override
     public void execute(ArrayList<String> arguments) {
         saveToFile();
         System.out.println("Automatons were successfully saved!");
     }
-/*
-* Saves the file without closing it
- */
+
     private void saveToFile() {
         if (Automata.currentFileEditted == ""){
             System.out.println("No file opened, the automatas weren't saved");

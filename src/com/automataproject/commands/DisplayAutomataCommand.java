@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Command for displaying detailed information about a specific automaton.
  * This command shows the structure of the automaton including all nodes and transitions.
  *
- * @author Automata Project Team
+ * @author Atanas Petrov Margaritov
  * @version 1.0
  */
 public class DisplayAutomataCommand implements Command {

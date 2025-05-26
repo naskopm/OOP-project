@@ -10,8 +10,13 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Stack;
-
+/**
+* Checks if an automata has an empty language
+ */
 public class isTheAlphabetEmpty implements Command {
+    /**
+     * Checks if an automata has an empty language
+     */
     @Override
     public void execute(ArrayList<String> arguments) {
         if (arguments.size() < 1) {

@@ -6,15 +6,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-
+/**
+ * Closes the file and clears the list of automatas
+ */
 public class Close implements Command{
+    /**
+     * Closes the file and clears the list of automatas
+     */
     @Override
     public void execute(ArrayList<String> arguments) {
         saveToFile();
     }
-    /*
-    * Closes the file and clears the list of automatas
-     */
+
     private void saveToFile() {
         if (Automata.currentFileEditted == ""){
             System.out.println("No file opened, the automatas weren't saved");
